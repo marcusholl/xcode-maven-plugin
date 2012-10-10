@@ -30,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -56,8 +57,11 @@ public class XCodeLifecycleTest extends XCodeTest
 
     prepareRemoteRepository(remoteRepositoryDirectory);
 
+    ArrayList<String> additionalCommandLineArgs = new ArrayList<String>();
+    additionalCommandLineArgs.add("-Dxcode.appIdSuffix=abc123");
+    
     test(testName, new File(getTestRootDirectory(), "straight-forward/MyLibrary"), "pom.xml", "deploy",
-          THE_EMPTY_LIST,
+          additionalCommandLineArgs,
           THE_EMPTY_MAP, remoteRepositoryDirectory);
 
     assertBuildEnvironmentPropertiesFile(testName, "MyLibrary");
@@ -91,7 +95,7 @@ public class XCodeLifecycleTest extends XCodeTest
     // ------------------------------------------------------------------------------------------
     Verifier appVerifier = test(testName, new File(getTestRootDirectory(), "straight-forward/MyApp"), "pom.xml",
           "deploy",
-          THE_EMPTY_LIST,
+          additionalCommandLineArgs,
           additionalSystemProperties, remoteRepositoryDirectory);
 
     final String myAppVersionRepoDir = Constants.GROUP_ID_WITH_SLASH + "/MyApp/" + Constants.APP_VERSION;
