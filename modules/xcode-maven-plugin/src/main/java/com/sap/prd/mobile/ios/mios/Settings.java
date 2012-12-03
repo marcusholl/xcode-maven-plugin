@@ -31,7 +31,7 @@ class Settings {
    * @throws IllegalArgumentException if the userSettings contain a key of an XCode setting that is managed by
    *            the plugin.
    */
-  public static Map<String, String> validateUserSettings(Map<String, String> userSettings) {
+  static Map<String, String> validateUserSettings(Map<String, String> userSettings) {
       if (userSettings != null) {
           for (String key : userSettings.keySet()) {
               if (MANAGED.contains(key))

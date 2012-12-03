@@ -8,6 +8,7 @@ class Options {
   private final static String PROJECT_NAME = "project";
   private final static String CONFIGURATION = "configuration";
   private final static String SDK = "sdk";
+  private final static String TARGET = "target";
   private final static List<String> MANAGED = Arrays.asList(PROJECT_NAME, CONFIGURATION, SDK);
 
   /**
@@ -16,7 +17,7 @@ class Options {
     * @throws IllegalArgumentException if the userOptions contain a key of an XCode option that is managed by
     *            the plugin.
     */
-   public static Map<String, String> validateUserOptions(Map<String, String> userOptions) {
+   static Map<String, String> validateUserOptions(Map<String, String> userOptions) {
        if (userOptions != null) {
            for (String key : userOptions.keySet()) {
                if (MANAGED.contains(key))
