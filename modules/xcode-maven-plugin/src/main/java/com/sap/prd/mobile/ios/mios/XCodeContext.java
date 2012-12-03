@@ -155,18 +155,18 @@ class XCodeContext
     return target;
   }
 
-    public Map getOptions() {
+    public Map<String, String> getOptions() {
         return options;
     }
 
-    public Map getSettings() {
+    public Map<String, String> getSettings() {
         return settings;
     }
 
    private static String toString(String prefix, Map<String, String> map, String separator) {
        if (map == null) return "";
        StringBuffer buffer = new StringBuffer();
-       for (Map.Entry entry : map.entrySet()){
+       for (Map.Entry<String, String> entry : map.entrySet()){
            buffer.append(prefix).append(entry.getKey()).append(separator).append(entry.getValue());
        }
        return buffer.toString();
