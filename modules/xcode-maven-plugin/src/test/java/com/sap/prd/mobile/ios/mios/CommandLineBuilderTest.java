@@ -76,7 +76,7 @@ public class CommandLineBuilderTest
       settings.put("CONFIGURATION_BUILD_DIR", "/Users/me/projects/myapp/target/xcode/src/main/xcode/build");
       context.setSettings(settings);
       expect(context, "xcodebuild", "-project", "MyLib.xcodeproj", "-configuration", "Release", "-sdk",
-              "mysdk", "VALID_ARCHS=i386", "CONFIGURATION_BUILD_DIR=/Users/me/projects/myapp/target/xcode/src/main/xcode/build", "clean", "build");
+              "mysdk", "VALID_ARCHS=i386", "CONFIGURATION_BUILD_DIR=/Users/me/projects/myapp/target/xcode/src/main/xcode/build", "DSTROOT=build", "SYMROOT=build", "SHARED_PRECOMPS_DIR=build", "OBJROOT=build", "clean", "build");
       context.setSettings(null);
     }
 
