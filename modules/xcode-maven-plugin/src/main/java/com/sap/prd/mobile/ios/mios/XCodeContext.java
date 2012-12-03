@@ -100,10 +100,10 @@ class XCodeContext
     this.target = target;
 
     if(settings == null) {
-      this.settings = Collections.unmodifiableMap(CommandLineBuilder.Settings.REQUIRED);
+      this.settings = Collections.unmodifiableMap(Settings.REQUIRED);
   } else {
       // TODO improve logging when a value gets replaced here.
-      settings.putAll(CommandLineBuilder.Settings.REQUIRED);
+      settings.putAll(Settings.REQUIRED);
       this.settings = Collections.unmodifiableMap(settings);
     }
     if(options == null) {
