@@ -89,7 +89,7 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
     }
 
     return new XCodeContext(projectName, getBuildActions(), projectDirectory, System.out, codeSignIdentity,
-          provisioningProfile, target);
+          provisioningProfile, target, null, null);
   }
 
   protected List<String> getBuildActions()

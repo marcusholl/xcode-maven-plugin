@@ -59,17 +59,22 @@ class XCodeContext
   
   private final String target;
 
-  private Map<String, String> options;
+  private final Map<String, String> options;
 
-  private Map<String, String> settings;
+  private final Map<String, String> settings;
 
   public XCodeContext(String projectName, List<String> buildActions,
         File projectRootDirectory, PrintStream out) {
-    this(projectName, buildActions, projectRootDirectory, out, null, null, null);
+    this(projectName, buildActions, projectRootDirectory, out, null, null, null, null, null);
 }
-  
+
   public XCodeContext(String projectName, List<String> buildActions,
         File projectRootDirectory, PrintStream out, String codeSignIdentity, String provisioningProfile, String target)
+  {
+    this(projectName, buildActions, projectRootDirectory, out, codeSignIdentity, provisioningProfile, target, null, null);
+  }
+  public XCodeContext(String projectName, List<String> buildActions,
+        File projectRootDirectory, PrintStream out, String codeSignIdentity, String provisioningProfile, String target, Map<String, String> settings, Map<String, String> options)
   {
     super();
 
@@ -93,6 +98,19 @@ class XCodeContext
     setOut(out);
     this.provisioningProfile = provisioningProfile;
     this.target = target;
+
+    if(settings == null) {
+      this.settings = Collections.unmodifiableMap(CommandLineBuilder.Settings.REQUIRED);
+  } else {
+      // TODO improve logging when a value gets replaced here.
+      settings.putAll(CommandLineBuilder.Settings.REQUIRED);
+      this.settings = Collections.unmodifiableMap(settings);
+    }
+    if(options == null) {
+      this.options = Collections.emptyMap();
+    } else {
+      this.options = Collections.unmodifiableMap(options);
+    }
   }
 
   public String getProjectName()
@@ -141,16 +159,8 @@ class XCodeContext
         return options;
     }
 
-    public void setOptions(Map<String, String> options) {
-        this.options = CommandLineBuilder.Options.validateUserOptions(options);
-    }
-
     public Map getSettings() {
         return settings;
-    }
-
-    public void setSettings(Map<String, String> settings) {
-        this.settings = CommandLineBuilder.Settings.validateUserSettings(settings);
     }
 
    private static String toString(String prefix, Map<String, String> map, String separator) {

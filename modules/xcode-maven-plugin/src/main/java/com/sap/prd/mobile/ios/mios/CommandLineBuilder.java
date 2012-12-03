@@ -100,7 +100,7 @@ class CommandLineBuilder {
         private final static String XCODE_OUTPUT_DIRECTORY = "build";
 
         private final static List<String> MANAGED = Arrays.asList(CODE_SIGN_IDENTITY, PROVISIONING_PROFILE, DSTROOT, SYMROOT, SHARED_PRECOMPS_DIR, OBJROOT);
-        private final static Map<String, String> REQUIRED = new LinkedHashMap<String, String>(7);
+        final static Map<String, String> REQUIRED = new LinkedHashMap<String, String>(7);
 
         static {
             // Output directories should be specified (recommended by Apple - http://developer.apple.com/devcenter/download.action?path=/wwdc_2012/wwdc_2012_session_pdfs/session_404__building_from_the_command_line_with_xcode.pdf)
@@ -136,9 +136,6 @@ class CommandLineBuilder {
             }
 
             Map<String, String> settings = xcodeContext.getSettings();
-            if (settings != null) {
-                settings.putAll(REQUIRED);
-            } else settings = REQUIRED;
 
             for (Map.Entry<String, String> entry : settings.entrySet()) {
                 appendSetting(result, entry.getKey(), entry.getValue());

@@ -70,26 +70,23 @@ public class CommandLineBuilderTest
     @Test
     public void testCommandlineBuilderStraightForwardSettings() throws Exception
     {
-      XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out);
       Map<String, String> settings = new LinkedHashMap<String, String>();
       settings.put("VALID_ARCHS", "i386");
       settings.put("CONFIGURATION_BUILD_DIR", "/Users/me/projects/myapp/target/xcode/src/main/xcode/build");
-      context.setSettings(settings);
+
+      XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, null, null, settings, null);
       expect(context, "xcodebuild", "-project", "MyLib.xcodeproj", "-configuration", "Release", "-sdk",
               "mysdk", "VALID_ARCHS=i386", "CONFIGURATION_BUILD_DIR=/Users/me/projects/myapp/target/xcode/src/main/xcode/build", "DSTROOT=build", "SYMROOT=build", "SHARED_PRECOMPS_DIR=build", "OBJROOT=build", "clean", "build");
-      context.setSettings(null);
     }
 
     @Test
     public void testCommandlineBuilderStraightForwardOptions() throws Exception
     {
-      XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out);
       Map<String, String> options = new LinkedHashMap<String, String>();
       options.put("arch", "i386");
-      context.setOptions(options);
+      XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, null, null, null, options);
       expect(context, "xcodebuild", "-arch", "i386", "-project", "MyLib.xcodeproj", "-configuration", "Release", "-sdk",
               "mysdk", "DSTROOT=build", "SYMROOT=build", "SHARED_PRECOMPS_DIR=build", "OBJROOT=build", "clean", "build");
-      context.setOptions(null);
     }
 
   @Test
