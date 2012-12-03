@@ -10,7 +10,7 @@ class Options {
   private final static String PROJECT_NAME = "project";
   private final static String CONFIGURATION = "configuration";
   private final static String SDK = "sdk";
-  private final static String TARGET = "target";
+  final static String TARGET = "target";
   private final static List<String> MANAGED = Arrays.asList(PROJECT_NAME, CONFIGURATION, SDK, TARGET);
   
   private Map<String, String> userOptions, managedOptions;

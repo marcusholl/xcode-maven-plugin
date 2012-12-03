@@ -54,24 +54,17 @@ class XCodeContext
 
   private PrintStream out;
 
-  private final String target;
-
   private final Options options;
 
   private final Settings settings;
 
   public XCodeContext(String projectName, List<String> buildActions,
         File projectRootDirectory, PrintStream out) {
-    this(projectName, buildActions, projectRootDirectory, out, null, null, null);
+    this(projectName, buildActions, projectRootDirectory, out, null, null);
 }
 
   public XCodeContext(String projectName, List<String> buildActions,
-        File projectRootDirectory, PrintStream out, String codeSignIdentity, String target)
-  {
-    this(projectName, buildActions, projectRootDirectory, out, target, null, null);
-  }
-  public XCodeContext(String projectName, List<String> buildActions,
-        File projectRootDirectory, PrintStream out, String target, Settings settings, Options options)
+        File projectRootDirectory, PrintStream out, Settings settings, Options options)
   {
     super();
 
@@ -85,7 +78,6 @@ class XCodeContext
     this.buildActions = Collections.unmodifiableList(buildActions);
     this.projectRootDirectory = projectRootDirectory;
     setOut(out);
-    this.target = target;
     
     if(settings == null) {
       Map<String, String> userSettings = new HashMap<String, String>(), managedSettings = new HashMap<String, String>();
@@ -141,7 +133,7 @@ class XCodeContext
 
   public String getTarget()
   {
-    return target;
+    return getOptions().getOptions().get(Options.TARGET);
   }
 
     public Options getOptions() {
@@ -168,7 +160,6 @@ class XCodeContext
     sb.append("ProjectRootDirectory: ").append(getProjectRootDirectory()).append(ls);
     sb.append("ProjectName         : ").append(getProjectName()).append(ls);
     sb.append("BuildActions        : ").append(buildActions).append(ls);
-    sb.append("Target              : ").append(target).append(ls);
     sb.append("Options             : ").append(toString(" -", options.getOptions(), " "));
     sb.append("Settings            : ").append(toString(" ", settings.getSettings(), "="));
     return sb.toString();
@@ -183,7 +174,6 @@ class XCodeContext
     result = prime * result + ((buildActions == null) ? 0 : buildActions.hashCode());
     result = prime * result + ((projectName == null) ? 0 : projectName.hashCode());
     result = prime * result + ((projectRootDirectory == null) ? 0 : projectRootDirectory.hashCode());
-    result = prime * result + ((target == null) ? 0 : target.hashCode());
     return result;
   }
 
@@ -206,10 +196,6 @@ class XCodeContext
       if (other.projectRootDirectory != null) return false;
     }
     else if (!projectRootDirectory.equals(other.projectRootDirectory)) return false;
-    if (target == null) {
-      if (other.target != null) return false;
-    }
-    else if (!target.equals(other.target)) return false;
     return true;
   }
 

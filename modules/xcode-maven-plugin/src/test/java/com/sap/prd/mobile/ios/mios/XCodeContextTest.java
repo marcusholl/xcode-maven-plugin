@@ -56,7 +56,7 @@ public class XCodeContextTest
     Settings settings = new Settings(null, managedSettings);
 
     final XCodeContext xCodeContext = new XCodeContext(projectName, Arrays.asList("clean",
-          "build"), projectDirectory, System.out, null, settings, null);
+          "build"), projectDirectory, System.out, settings, null);
 
     
     assertEquals(projectName, xCodeContext.getProjectName());
@@ -122,7 +122,7 @@ public class XCodeContextTest
     managedSettings.put(Settings.CODE_SIGN_IDENTITY, "");
     Settings settings = new Settings(null, managedSettings);
     
-    new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, null, settings, null);
+    new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, null);
   }
   
   @Test

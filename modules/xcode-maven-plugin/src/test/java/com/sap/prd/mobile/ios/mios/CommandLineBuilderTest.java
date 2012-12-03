@@ -62,7 +62,6 @@ public class CommandLineBuilderTest
   public void testCommandlineBuilderStraightForward() throws Exception
   {
     XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out);
-    CommandLineBuilder commandLineBuilder = new CommandLineBuilder("Release", "mysdk", context);
     expect(context, "xcodebuild", "-project", "MyLib.xcodeproj", "-configuration", "Release", "-sdk",
             "mysdk", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "SHARED_PRECOMPS_DIR=build", "clean", "build");
   }
@@ -75,7 +74,7 @@ public class CommandLineBuilderTest
       userSettings.put("CONFIGURATION_BUILD_DIR", "/Users/me/projects/myapp/target/xcode/src/main/xcode/build");
       Settings settings = new Settings(userSettings, null);
 
-      XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, settings, null);
+      XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, null);
       expect(context, "xcodebuild", "-project", "MyLib.xcodeproj", "-configuration", "Release", "-sdk",
               "mysdk", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "CONFIGURATION_BUILD_DIR=/Users/me/projects/myapp/target/xcode/src/main/xcode/build", "SHARED_PRECOMPS_DIR=build", "VALID_ARCHS=i386", "clean", "build");
     }
@@ -90,7 +89,7 @@ public class CommandLineBuilderTest
       
       Options options = new Options(managedOptions, userOptions);
       
-      XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, null, options);
+      XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
       expect(context, "xcodebuild", "-arch", "i386", "-project", "MyLib.xcodeproj", "-configuration", "Release", "-sdk",
               "mysdk", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "SHARED_PRECOMPS_DIR=build", "clean", "build");
     }
@@ -102,7 +101,7 @@ public class CommandLineBuilderTest
     managedSettings.put("CODE_SIGN_IDENTITY", "MyCodeSignIdentity");
     Settings settings = new Settings(userSettings, managedSettings);
     
-    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, settings, null);
+    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, null);
     CommandLineBuilder commandLineBuilder = new CommandLineBuilder("Release", "mysdk", context);
     assertTrue(Arrays.asList(commandLineBuilder.createBuildCall()).contains("CODE_SIGN_IDENTITY=MyCodeSignIdentity"));
   }
@@ -115,7 +114,7 @@ public class CommandLineBuilderTest
     managedSettings.put("CODE_SIGN_IDENTITY", null);
     Settings settings = new Settings(userSettings, managedSettings);
 
-    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, settings, null);
+    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, null);
     CommandLineBuilder commandLineBuilder = new CommandLineBuilder("Release", "mysdk", context);
 
     for (String param : commandLineBuilder.createBuildCall()) {
@@ -127,7 +126,10 @@ public class CommandLineBuilderTest
   @Test(expected = IllegalArgumentException.class)
   public void testCodeSignIdentityIsEmpty() throws Exception
   {
-    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), null, System.out, "", null, null);
+    HashMap<String, String> managedSettings = new HashMap<String, String>();
+    managedSettings.put(Settings.CODE_SIGN_IDENTITY, "");
+    Settings settings = new Settings(null, managedSettings);
+    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), null, System.out, settings, null);
     new CommandLineBuilder("Release", "mysdk", context);
   }
 
@@ -139,7 +141,7 @@ public class CommandLineBuilderTest
     managedSettings.put("PROVISIONING_PROFILE", "MyProvisioningProfile");
     Settings settings = new Settings(userSettings, managedSettings);
 
-    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, settings, null);
+    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, null);
     CommandLineBuilder commandLineBuilder = new CommandLineBuilder("Release", "mysdk", context);
     assertTrue(Arrays.asList(commandLineBuilder.createBuildCall()).contains("PROVISIONING_PROFILE=MyProvisioningProfile"));
   }
@@ -147,7 +149,7 @@ public class CommandLineBuilderTest
   @Test
   public void testProvisioningProfileIsNull() throws Exception
   {
-    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, null, null);
+    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, null);
     CommandLineBuilder commandLineBuilder = new CommandLineBuilder("Release", "mysdk", context);
     for (String param : commandLineBuilder.createBuildCall()) {
       assertFalse("The command line must not contain a parameter 'PROVISIONING_PROFILE='",

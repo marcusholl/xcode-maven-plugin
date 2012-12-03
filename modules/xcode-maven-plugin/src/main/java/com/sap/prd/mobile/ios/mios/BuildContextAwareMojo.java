@@ -93,8 +93,11 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
     managedSettings.put(Settings.CODE_SIGN_IDENTITY, codeSignIdentity);
     managedSettings.put(Settings.PROVISIONING_PROFILE, provisioningProfile);
     Settings settings = new Settings(null, managedSettings);
-    Options options = new Options(null, null);
-    return new XCodeContext(projectName, getBuildActions(), projectDirectory, System.out, target, settings, options);
+    
+    HashMap<String, String> managedOptions = new HashMap<String, String>();
+    managedOptions.put(Options.TARGET, target);
+    Options options = new Options(null, managedOptions);
+    return new XCodeContext(projectName, getBuildActions(), projectDirectory, System.out, settings, options);
   }
 
   protected List<String> getBuildActions()
