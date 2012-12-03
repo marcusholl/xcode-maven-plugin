@@ -1,6 +1,8 @@
 package com.sap.prd.mobile.ios.mios;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,8 @@ class Settings {
   private final static List<String> MANAGED = Arrays.asList(CODE_SIGN_IDENTITY, PROVISIONING_PROFILE, DSTROOT, SYMROOT, SHARED_PRECOMPS_DIR, OBJROOT);
   final static Map<String, String> REQUIRED = new LinkedHashMap<String, String>(7);
 
+  private Map<String, String> userSettings, managedSettings; 
+  
   static {
       // Output directories should be specified (recommended by Apple - http://developer.apple.com/devcenter/download.action?path=/wwdc_2012/wwdc_2012_session_pdfs/session_404__building_from_the_command_line_with_xcode.pdf)
       REQUIRED.put(DSTROOT, XCODE_OUTPUT_DIRECTORY);
@@ -25,6 +29,45 @@ class Settings {
       REQUIRED.put(OBJROOT, XCODE_OUTPUT_DIRECTORY);
   }
 
+  Settings(Map<String, String> userSettings, Map<String, String> managedSettings) {
+    
+    if(userSettings == null) {
+      this.userSettings = Collections.emptyMap();
+    } else {
+
+      for(String key :userSettings.keySet())
+        if(MANAGED.contains(key))
+          throw new IllegalArgumentException("Setting '" + key + "' contained in user settings. This settings is managed by the plugin and must not be provided from outside.");
+
+      this.userSettings = Collections.unmodifiableMap(new HashMap<String, String>(userSettings));
+    }
+    
+    if(managedSettings == null) {
+      this.managedSettings = Collections.unmodifiableMap(new HashMap<String, String>(REQUIRED));
+    } else {
+      
+      Map<String, String> _managedSettings = new HashMap<String, String>();
+      
+      for(Map.Entry<String, String> e : managedSettings.entrySet()) {
+
+        if(e.getKey() == null || e.getKey().isEmpty())
+          throw new IllegalArgumentException("Empty key found in settings. Value was: '" + e.getValue() + "'.");
+        if(e.getValue() == null || e.getValue().trim().length() == 0)
+          continue; // todo logging
+
+        _managedSettings.put(e.getKey(), e.getValue());
+      }
+      _managedSettings.putAll(REQUIRED);
+      this.managedSettings = Collections.unmodifiableMap(new HashMap<String, String>(_managedSettings));
+    }
+  }
+
+  Map<String, String> getSettings() {
+    Map<String, String> result = new HashMap<String, String>(this.userSettings.size() + this.managedSettings.size());
+    result.putAll(this.userSettings);
+    result.putAll(this.managedSettings);
+    return Collections.unmodifiableMap(result);
+  }
   /**
    * @param userSettings to be validated.
    * @return the passed in userSettings if validation passed without exception
@@ -41,18 +84,9 @@ class Settings {
       return userSettings;
   }
 
-  static void appendSettings(XCodeContext xcodeContext, List<String> result) {
-      if (xcodeContext.getCodeSignIdentity() != null && !xcodeContext.getCodeSignIdentity().isEmpty()) {
-          appendSetting(result, Settings.CODE_SIGN_IDENTITY, xcodeContext.getCodeSignIdentity());
-      }
+  static void appendSettings(Settings settings, List<String> result) {
 
-      if (xcodeContext.getProvisioningProfile() != null) {
-          appendSetting(result, Settings.PROVISIONING_PROFILE, xcodeContext.getProvisioningProfile());
-      }
-
-      Map<String, String> settings = xcodeContext.getSettings();
-
-      for (Map.Entry<String, String> entry : settings.entrySet()) {
+       for (Map.Entry<String, String> entry : settings.getSettings().entrySet()) {
           appendSetting(result, entry.getKey(), entry.getValue());
       }
   }

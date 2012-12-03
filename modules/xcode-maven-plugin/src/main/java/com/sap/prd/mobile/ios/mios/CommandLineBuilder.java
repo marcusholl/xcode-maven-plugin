@@ -54,7 +54,7 @@ class CommandLineBuilder {
         List<String> result = new ArrayList<String>();
         result.add(XCODEBUILD);
         Options.appendOptions(xcodeContext, result, sdk, configuration);
-        Settings.appendSettings(xcodeContext, result);
+        Settings.appendSettings(xcodeContext.getSettings(), result);
         return result;
     }
 

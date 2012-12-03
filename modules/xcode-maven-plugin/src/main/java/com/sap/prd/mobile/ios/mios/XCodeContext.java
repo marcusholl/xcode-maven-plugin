@@ -62,7 +62,7 @@ class XCodeContext
 
   private final Options options;
 
-  private final Map<String, String> settings;
+  private final Settings settings;
 
   public XCodeContext(String projectName, List<String> buildActions,
         File projectRootDirectory, PrintStream out) {
@@ -75,7 +75,7 @@ class XCodeContext
     this(projectName, buildActions, projectRootDirectory, out, codeSignIdentity, provisioningProfile, target, null, null);
   }
   public XCodeContext(String projectName, List<String> buildActions,
-        File projectRootDirectory, PrintStream out, String codeSignIdentity, String provisioningProfile, String target, Map<String, String> settings, Options options)
+        File projectRootDirectory, PrintStream out, String codeSignIdentity, String provisioningProfile, String target, Settings settings, Options options)
   {
     super();
 
@@ -99,13 +99,12 @@ class XCodeContext
     setOut(out);
     this.provisioningProfile = provisioningProfile;
     this.target = target;
-
+    
     if(settings == null) {
-      this.settings = Collections.unmodifiableMap(Settings.REQUIRED);
+      Map<String, String> userSettings = new HashMap<String, String>(), managedSettings = new HashMap<String, String>();
+      this.settings = new Settings(userSettings, managedSettings);
   } else {
-      // TODO improve logging when a value gets replaced here.
-      settings.putAll(Settings.REQUIRED);
-      this.settings = Collections.unmodifiableMap(settings);
+      this.settings = settings;
     }
     
     if(options == null) {
@@ -162,7 +161,7 @@ class XCodeContext
         return options;
     }
 
-    public Map<String, String> getSettings() {
+    public Settings getSettings() {
         return settings;
     }
 
@@ -186,7 +185,7 @@ class XCodeContext
     sb.append("ProvisioningProfile : ").append(provisioningProfile).append(ls);
     sb.append("Target              : ").append(target).append(ls);
     sb.append("Options             : ").append(toString(" -", options.getOptions(), " "));
-    sb.append("Settings            : ").append(toString(" ", settings, "="));
+    sb.append("Settings            : ").append(toString(" ", settings.getSettings(), "="));
     return sb.toString();
   }
 
