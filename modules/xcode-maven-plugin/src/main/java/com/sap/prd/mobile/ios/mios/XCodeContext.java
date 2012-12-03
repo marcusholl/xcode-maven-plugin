@@ -54,8 +54,6 @@ class XCodeContext
 
   private PrintStream out;
 
-  private final String provisioningProfile;
-  
   private final String target;
 
   private final Options options;
@@ -64,16 +62,16 @@ class XCodeContext
 
   public XCodeContext(String projectName, List<String> buildActions,
         File projectRootDirectory, PrintStream out) {
-    this(projectName, buildActions, projectRootDirectory, out, null, null, null, null);
+    this(projectName, buildActions, projectRootDirectory, out, null, null, null);
 }
 
   public XCodeContext(String projectName, List<String> buildActions,
-        File projectRootDirectory, PrintStream out, String codeSignIdentity, String provisioningProfile, String target)
+        File projectRootDirectory, PrintStream out, String codeSignIdentity, String target)
   {
-    this(projectName, buildActions, projectRootDirectory, out, provisioningProfile, target, null, null);
+    this(projectName, buildActions, projectRootDirectory, out, target, null, null);
   }
   public XCodeContext(String projectName, List<String> buildActions,
-        File projectRootDirectory, PrintStream out, String provisioningProfile, String target, Settings settings, Options options)
+        File projectRootDirectory, PrintStream out, String target, Settings settings, Options options)
   {
     super();
 
@@ -87,7 +85,6 @@ class XCodeContext
     this.buildActions = Collections.unmodifiableList(buildActions);
     this.projectRootDirectory = projectRootDirectory;
     setOut(out);
-    this.provisioningProfile = provisioningProfile;
     this.target = target;
     
     if(settings == null) {
@@ -139,7 +136,7 @@ class XCodeContext
 
   public String getProvisioningProfile()
   {
-    return provisioningProfile;
+    return getSettings().getSettings().get(Settings.PROVISIONING_PROFILE);
   }
 
   public String getTarget()
@@ -171,7 +168,6 @@ class XCodeContext
     sb.append("ProjectRootDirectory: ").append(getProjectRootDirectory()).append(ls);
     sb.append("ProjectName         : ").append(getProjectName()).append(ls);
     sb.append("BuildActions        : ").append(buildActions).append(ls);
-    sb.append("ProvisioningProfile : ").append(provisioningProfile).append(ls);
     sb.append("Target              : ").append(target).append(ls);
     sb.append("Options             : ").append(toString(" -", options.getOptions(), " "));
     sb.append("Settings            : ").append(toString(" ", settings.getSettings(), "="));
@@ -187,7 +183,6 @@ class XCodeContext
     result = prime * result + ((buildActions == null) ? 0 : buildActions.hashCode());
     result = prime * result + ((projectName == null) ? 0 : projectName.hashCode());
     result = prime * result + ((projectRootDirectory == null) ? 0 : projectRootDirectory.hashCode());
-    result = prime * result + ((provisioningProfile == null) ? 0 : provisioningProfile.hashCode());
     result = prime * result + ((target == null) ? 0 : target.hashCode());
     return result;
   }
@@ -211,10 +206,6 @@ class XCodeContext
       if (other.projectRootDirectory != null) return false;
     }
     else if (!projectRootDirectory.equals(other.projectRootDirectory)) return false;
-    if (provisioningProfile == null) {
-      if (other.provisioningProfile != null) return false;
-    }
-    else if (!provisioningProfile.equals(other.provisioningProfile)) return false;
     if (target == null) {
       if (other.target != null) return false;
     }

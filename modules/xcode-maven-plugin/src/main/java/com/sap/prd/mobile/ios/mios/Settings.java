@@ -9,7 +9,7 @@ import java.util.Map;
 
 class Settings {
   final static String CODE_SIGN_IDENTITY = "CODE_SIGN_IDENTITY";
-  private final static String PROVISIONING_PROFILE = "PROVISIONING_PROFILE";
+  final static String PROVISIONING_PROFILE = "PROVISIONING_PROFILE";
   private final static String DSTROOT = "DSTROOT";
   private final static String SYMROOT = "SYMROOT";
   private final static String SHARED_PRECOMPS_DIR = "SHARED_PRECOMPS_DIR";
