@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -82,8 +83,13 @@ public class CommandLineBuilderTest
     @Test
     public void testCommandlineBuilderStraightForwardOptions() throws Exception
     {
-      Map<String, String> options = new LinkedHashMap<String, String>();
-      options.put("arch", "i386");
+      
+      Map<String, String> managedOptions = Collections.emptyMap();
+      Map<String, String> userOptions = new LinkedHashMap<String, String>();
+      userOptions.put("arch", "i386");
+      
+      Options options = new Options(managedOptions, userOptions);
+      
       XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, null, null, null, options);
       expect(context, "xcodebuild", "-arch", "i386", "-project", "MyLib.xcodeproj", "-configuration", "Release", "-sdk",
               "mysdk", "DSTROOT=build", "SYMROOT=build", "SHARED_PRECOMPS_DIR=build", "OBJROOT=build", "clean", "build");

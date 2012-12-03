@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -59,7 +60,7 @@ class XCodeContext
   
   private final String target;
 
-  private final Map<String, String> options;
+  private final Options options;
 
   private final Map<String, String> settings;
 
@@ -74,7 +75,7 @@ class XCodeContext
     this(projectName, buildActions, projectRootDirectory, out, codeSignIdentity, provisioningProfile, target, null, null);
   }
   public XCodeContext(String projectName, List<String> buildActions,
-        File projectRootDirectory, PrintStream out, String codeSignIdentity, String provisioningProfile, String target, Map<String, String> settings, Map<String, String> options)
+        File projectRootDirectory, PrintStream out, String codeSignIdentity, String provisioningProfile, String target, Map<String, String> settings, Options options)
   {
     super();
 
@@ -106,10 +107,12 @@ class XCodeContext
       settings.putAll(Settings.REQUIRED);
       this.settings = Collections.unmodifiableMap(settings);
     }
+    
     if(options == null) {
-      this.options = Collections.emptyMap();
+      Map<String, String> userOptions = new HashMap<String, String>(), managedOptions = new HashMap<String, String>();
+      this.options = new Options(userOptions, managedOptions);
     } else {
-      this.options = Collections.unmodifiableMap(options);
+      this.options = options;
     }
   }
 
@@ -155,7 +158,7 @@ class XCodeContext
     return target;
   }
 
-    public Map<String, String> getOptions() {
+    public Options getOptions() {
         return options;
     }
 
@@ -182,7 +185,7 @@ class XCodeContext
     sb.append("CodeSignIdentity    : ").append(codeSignIdentity).append(ls);
     sb.append("ProvisioningProfile : ").append(provisioningProfile).append(ls);
     sb.append("Target              : ").append(target).append(ls);
-    sb.append("Options             : ").append(toString(" -", options, " "));
+    sb.append("Options             : ").append(toString(" -", options.getOptions(), " "));
     sb.append("Settings            : ").append(toString(" ", settings, "="));
     return sb.toString();
   }
