@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import junit.framework.Assert;
 
@@ -49,9 +50,15 @@ public class XCodeContextTest
 
     final String projectName = "MyLibrary";
 
-    final XCodeContext xCodeContext = new XCodeContext(projectName, Arrays.asList("clean",
-          "build"), projectDirectory, System.out, "MyCodeSignIdentity", "MyProvisioningProfile", null);
+    HashMap<String, String> managedSettings = new HashMap<String, String>();
+    managedSettings.put(Settings.CODE_SIGN_IDENTITY, "MyCodeSignIdentity");
+    
+    Settings settings = new Settings(null, managedSettings);
 
+    final XCodeContext xCodeContext = new XCodeContext(projectName, Arrays.asList("clean",
+          "build"), projectDirectory, System.out, "MyProvisioningProfile", null, settings, null);
+
+    
     assertEquals(projectName, xCodeContext.getProjectName());
     assertArrayEquals(new String[] { "clean", "build" }, xCodeContext.getBuildActions().toArray());
     assertEquals("MyCodeSignIdentity", xCodeContext.getCodeSignIdentity());
@@ -111,7 +118,11 @@ public class XCodeContextTest
   @Test(expected = IllegalArgumentException.class)
   public void testCodeSignIdentityIsEmpty() throws Exception
   {
-    new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, "", null, null);
+    HashMap<String, String> managedSettings = new HashMap<String, String>();
+    managedSettings.put(Settings.CODE_SIGN_IDENTITY, "");
+    Settings settings = new Settings(null, managedSettings);
+    
+    new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, "", null, settings, null);
   }
   
   @Test

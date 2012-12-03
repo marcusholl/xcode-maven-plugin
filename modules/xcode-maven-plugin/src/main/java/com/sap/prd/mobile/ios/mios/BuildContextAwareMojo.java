@@ -22,6 +22,7 @@ package com.sap.prd.mobile.ios.mios;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
@@ -88,8 +89,11 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
       throw new IllegalStateException("Invalid source code location: '" + sourceCodeLocation + "'");
     }
 
-    return new XCodeContext(projectName, getBuildActions(), projectDirectory, System.out, codeSignIdentity,
-          provisioningProfile, target, null, null);
+    HashMap<String, String> managedSettings = new HashMap<String, String>();
+    Settings settings = new Settings(null, managedSettings);
+    Options options = new Options(null, null);
+    return new XCodeContext(projectName, getBuildActions(), projectDirectory, System.out,
+          provisioningProfile, target, settings, options);
   }
 
   protected List<String> getBuildActions()

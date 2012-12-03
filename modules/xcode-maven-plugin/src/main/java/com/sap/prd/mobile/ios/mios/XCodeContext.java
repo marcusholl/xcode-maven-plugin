@@ -50,8 +50,6 @@ class XCodeContext
 
   private final List<String> buildActions;
 
-  private final String codeSignIdentity;
-
   private final File projectRootDirectory;
 
   private PrintStream out;
@@ -66,16 +64,16 @@ class XCodeContext
 
   public XCodeContext(String projectName, List<String> buildActions,
         File projectRootDirectory, PrintStream out) {
-    this(projectName, buildActions, projectRootDirectory, out, null, null, null, null, null);
+    this(projectName, buildActions, projectRootDirectory, out, null, null, null, null);
 }
 
   public XCodeContext(String projectName, List<String> buildActions,
         File projectRootDirectory, PrintStream out, String codeSignIdentity, String provisioningProfile, String target)
   {
-    this(projectName, buildActions, projectRootDirectory, out, codeSignIdentity, provisioningProfile, target, null, null);
+    this(projectName, buildActions, projectRootDirectory, out, provisioningProfile, target, null, null);
   }
   public XCodeContext(String projectName, List<String> buildActions,
-        File projectRootDirectory, PrintStream out, String codeSignIdentity, String provisioningProfile, String target, Settings settings, Options options)
+        File projectRootDirectory, PrintStream out, String provisioningProfile, String target, Settings settings, Options options)
   {
     super();
 
@@ -85,16 +83,8 @@ class XCodeContext
     if(projectRootDirectory == null || !projectRootDirectory.canRead())
       throw new IllegalArgumentException("ProjectRootDirectory '" + projectRootDirectory + "' is null or cannot be read.");
 
-    if (codeSignIdentity != null && codeSignIdentity.trim().isEmpty())
-      throw new IllegalArgumentException("CodesignIdentity was empty: '" + codeSignIdentity
-            + "'. If you want to use the code" +
-            " sign identity defined in the xCode project configuration just do" +
-            " not provide the 'codeSignIdentity' in your Maven settings.");
-   
-    
     this.projectName = projectName;
     this.buildActions = Collections.unmodifiableList(buildActions);
-    this.codeSignIdentity = codeSignIdentity;
     this.projectRootDirectory = projectRootDirectory;
     setOut(out);
     this.provisioningProfile = provisioningProfile;
@@ -127,7 +117,7 @@ class XCodeContext
 
   public String getCodeSignIdentity()
   {
-    return codeSignIdentity;
+    return settings.getSettings().get(Settings.CODE_SIGN_IDENTITY);
   }
 
   public File getProjectRootDirectory()
@@ -181,7 +171,6 @@ class XCodeContext
     sb.append("ProjectRootDirectory: ").append(getProjectRootDirectory()).append(ls);
     sb.append("ProjectName         : ").append(getProjectName()).append(ls);
     sb.append("BuildActions        : ").append(buildActions).append(ls);
-    sb.append("CodeSignIdentity    : ").append(codeSignIdentity).append(ls);
     sb.append("ProvisioningProfile : ").append(provisioningProfile).append(ls);
     sb.append("Target              : ").append(target).append(ls);
     sb.append("Options             : ").append(toString(" -", options.getOptions(), " "));
@@ -196,7 +185,6 @@ class XCodeContext
     final int prime = 31;
     int result = 1;
     result = prime * result + ((buildActions == null) ? 0 : buildActions.hashCode());
-    result = prime * result + ((codeSignIdentity == null) ? 0 : codeSignIdentity.hashCode());
     result = prime * result + ((projectName == null) ? 0 : projectName.hashCode());
     result = prime * result + ((projectRootDirectory == null) ? 0 : projectRootDirectory.hashCode());
     result = prime * result + ((provisioningProfile == null) ? 0 : provisioningProfile.hashCode());
@@ -215,10 +203,6 @@ class XCodeContext
       if (other.buildActions != null) return false;
     }
     else if (!buildActions.equals(other.buildActions)) return false;
-    if (codeSignIdentity == null) {
-      if (other.codeSignIdentity != null) return false;
-    }
-    else if (!codeSignIdentity.equals(other.codeSignIdentity)) return false;
     if (projectName == null) {
       if (other.projectName != null) return false;
     }

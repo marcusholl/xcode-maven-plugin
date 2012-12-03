@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 class Settings {
-  private final static String CODE_SIGN_IDENTITY = "CODE_SIGN_IDENTITY";
+  final static String CODE_SIGN_IDENTITY = "CODE_SIGN_IDENTITY";
   private final static String PROVISIONING_PROFILE = "PROVISIONING_PROFILE";
   private final static String DSTROOT = "DSTROOT";
   private final static String SYMROOT = "SYMROOT";
@@ -52,8 +52,17 @@ class Settings {
 
         if(e.getKey() == null || e.getKey().isEmpty())
           throw new IllegalArgumentException("Empty key found in settings. Value was: '" + e.getValue() + "'.");
-        if(e.getValue() == null || e.getValue().trim().length() == 0)
+        if(e.getValue() == null || e.getValue().trim().length() == 0) {
+          
+          if(e.getKey().equals(CODE_SIGN_IDENTITY) && e.getValue() != null) {
+            throw new IllegalArgumentException("CodesignIdentity was empty: '" + e.getValue()
+                  + "'. If you want to use the code"
+                  + " sign identity defined in the xCode project configuration just do"
+                  + " not provide the 'codeSignIdentity' in your Maven settings.");
+          }
+
           continue; // todo logging
+        }
 
         _managedSettings.put(e.getKey(), e.getValue());
       }
