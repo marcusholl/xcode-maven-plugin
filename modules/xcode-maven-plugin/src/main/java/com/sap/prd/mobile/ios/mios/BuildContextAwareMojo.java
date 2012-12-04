@@ -101,7 +101,7 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
     HashMap<String, String> managedOptions = new HashMap<String, String>();
 
     managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), configuration);
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), projectName);
+    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), projectName + ".xcodeproj");
     
     if(sdk != null && !sdk.trim().isEmpty())
       managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), sdk);

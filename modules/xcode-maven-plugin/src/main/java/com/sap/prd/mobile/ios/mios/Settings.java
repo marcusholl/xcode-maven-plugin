@@ -104,4 +104,34 @@ class Settings {
   private static void appendSetting(List<String> result, String key, String value) {
       result.add(key + "=" + value);
   }
+
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((managedSettings == null) ? 0 : managedSettings.hashCode());
+    result = prime * result + ((userSettings == null) ? 0 : userSettings.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    Settings other = (Settings) obj;
+    if (managedSettings == null) {
+      if (other.managedSettings != null) return false;
+    }
+    else if (!managedSettings.equals(other.managedSettings)) return false;
+    if (userSettings == null) {
+      if (other.userSettings != null) return false;
+    }
+    else if (!userSettings.equals(other.userSettings)) return false;
+    return true;
+  }
+  
+  
 }

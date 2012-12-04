@@ -93,5 +93,35 @@ class Options {
      CommandLineBuilder.appendValue(result, value);
  }
 
+  @Override
+  public int hashCode()
+  {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((managedOptions == null) ? 0 : managedOptions.hashCode());
+    result = prime * result + ((userOptions == null) ? 0 : userOptions.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj) return true;
+    if (obj == null) return false;
+    if (getClass() != obj.getClass()) return false;
+    Options other = (Options) obj;
+    if (managedOptions == null) {
+      if (other.managedOptions != null) return false;
+    }
+    else if (!managedOptions.equals(other.managedOptions)) return false;
+    if (userOptions == null) {
+      if (other.userOptions != null) return false;
+    }
+    else if (!userOptions.equals(other.userOptions)) return false;
+    return true;
+  }
+  
+  
+
 }
 

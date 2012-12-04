@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.ByteOrder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -70,16 +71,19 @@ class EffectiveBuildSettings
   { 
     final CommandLineBuilder cmdLineBuilder = new CommandLineBuilder(context);
     PrintStream out = null;
+    ByteArrayOutputStream os = null;
     try {
-      ByteArrayOutputStream os = new ByteArrayOutputStream();
+      os = new ByteArrayOutputStream();
       out = new PrintStream(os);
 
       final int returnValue = Forker.forkProcess(out, context.getProjectRootDirectory(),
             cmdLineBuilder.createShowBuildSettingsCall());
 
       if (returnValue != 0) {
+        if(out != null)
+          out.flush();
         throw new XCodeException("Could not execute xcodebuild -showBuildSettings command for configuration "
-              + context.getOptions().getOptions().get(Options.ManagedOption.CONFIGURATION.toLowerCase()) + " and sdk " + context.getOptions().getOptions().get(Options.ManagedOption.SDK.toLowerCase()));
+              + context.getConfiguration() + " and sdk " + context.getSDK() + ": " + new String(os.toByteArray()));
       }
 
       out.flush();

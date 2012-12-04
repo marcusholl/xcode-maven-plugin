@@ -169,34 +169,43 @@ class XCodeContext
     return sb.toString();
   }
 
-
   @Override
-  public int hashCode()
-  {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((buildActions == null) ? 0 : buildActions.hashCode());
-    result = prime * result + ((projectRootDirectory == null) ? 0 : projectRootDirectory.hashCode());
-    return result;
-  }
+    public int hashCode()
+    {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((buildActions == null) ? 0 : buildActions.hashCode());
+      result = prime * result + ((options == null) ? 0 : options.hashCode());
+      result = prime * result + ((projectRootDirectory == null) ? 0 : projectRootDirectory.hashCode());
+      result = prime * result + ((settings == null) ? 0 : settings.hashCode());
+      return result;
+    }
 
-  @Override
-  public boolean equals(Object obj)
-  {
-    if (this == obj) return true;
-    if (obj == null) return false;
-    if (getClass() != obj.getClass()) return false;
-    XCodeContext other = (XCodeContext) obj;
-    if (buildActions == null) {
-      if (other.buildActions != null) return false;
+    @Override
+    public boolean equals(Object obj)
+    {
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
+      XCodeContext other = (XCodeContext) obj;
+      if (buildActions == null) {
+        if (other.buildActions != null) return false;
+      }
+      else if (!buildActions.equals(other.buildActions)) return false;
+      if (options == null) {
+        if (other.options != null) return false;
+      }
+      else if (!options.equals(other.options)) return false;
+      if (projectRootDirectory == null) {
+        if (other.projectRootDirectory != null) return false;
+      }
+      else if (!projectRootDirectory.equals(other.projectRootDirectory)) return false;
+      if (settings == null) {
+        if (other.settings != null) return false;
+      }
+      else if (!settings.equals(other.settings)) return false;
+      return true;
     }
-    else if (!buildActions.equals(other.buildActions)) return false;
-    if (projectRootDirectory == null) {
-      if (other.projectRootDirectory != null) return false;
-    }
-    else if (!projectRootDirectory.equals(other.projectRootDirectory)) return false;
-    return true;
-  }
 
   private static void raiseExceptionIfInvalid(final String key, final Collection<String> collection)
   {
