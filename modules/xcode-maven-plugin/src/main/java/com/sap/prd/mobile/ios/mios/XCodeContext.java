@@ -133,7 +133,7 @@ class XCodeContext
 
   public String getTarget()
   {
-    return getOptions().getOptions().get(Options.TARGET);
+    return getOptions().getOptions().get(Options.ManagedOption.TARGET.toLowerCase());
   }
 
     public Options getOptions() {

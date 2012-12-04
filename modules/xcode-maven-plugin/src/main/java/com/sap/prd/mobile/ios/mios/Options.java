@@ -7,16 +7,29 @@ import java.util.List;
 import java.util.Map;
 
 class Options {
-  private final static String PROJECT_NAME = "project";
-  private final static String CONFIGURATION = "configuration";
-  private final static String SDK = "sdk";
-  final static String TARGET = "target";
-  private final static List<String> MANAGED = Arrays.asList(PROJECT_NAME, CONFIGURATION, SDK, TARGET);
-  
+
+
+  enum ManagedOption {
+    PROJECT(true), CONFIGURATION(true), SDK(false), TARGET(false);
+
+    private final boolean required;
+    ManagedOption(boolean required) {
+      this.required = required;
+    }
+
+    String toLowerCase() {
+      return name().toLowerCase();
+    }
+
+    boolean isRequired() {
+      return required;
+    }
+  }
+
   private Map<String, String> userOptions, managedOptions;
 
   Options(Map<String, String> userOptions, Map<String, String> managedOptions) {
-    
+
     if(userOptions == null)
       this.userOptions = Collections.emptyMap();
     else
@@ -26,16 +39,17 @@ class Options {
       this.managedOptions = Collections.emptyMap();
     else
       this.managedOptions = Collections.unmodifiableMap(new HashMap<String, String>(managedOptions));
-    
+
+    validateManagedOptions(this.managedOptions);
     validateUserOptions(this.userOptions);
   }
-  
+
   Map<String, String> getOptions() {
     final Map<String, String> result = new HashMap<String, String>();
-    
+
     result.putAll(userOptions);
     result.putAll(managedOptions);
-    
+
     return result;
   }
   /**
@@ -45,29 +59,31 @@ class Options {
     *            the plugin.
     */
    final static Map<String, String> validateUserOptions(Map<String, String> userOptions) {
-       if (userOptions != null) {
-           for (String key : userOptions.keySet()) {
-               if (MANAGED.contains(key))
-                   throw new IllegalArgumentException("XCode Option '" + key + "' is managed by the plugin and cannot be modified by the user.");
-           }
-       }
-       return userOptions;
+
+     for(ManagedOption option : ManagedOption.values()) {
+       if(userOptions.keySet().contains(option.toLowerCase()))
+         throw new IllegalArgumentException("XCode Option '" + option.toLowerCase() + "' is managed by the plugin and cannot be modified by the user.");
+     }
+
+     return userOptions;
    }
 
-  static void appendOptions(XCodeContext xcodeContext, List<String> result, String sdk, String configuration) {
+   final static Map<String, String> validateManagedOptions(Map<String, String> managedOptions) {
+
+     for(ManagedOption option : ManagedOption.values()) {
+       if(option.isRequired() && !managedOptions.containsKey(option.toLowerCase()))
+         throw new IllegalArgumentException("Required option '" + option.toLowerCase() + "' was not available inside the managed options.");
+     }
+
+     return managedOptions;
+   }
+
+  static void appendOptions(XCodeContext xcodeContext, List<String> result) {
       Map<String, String> options = xcodeContext.getOptions().getOptions();
       if (options != null) {
           for (Map.Entry<String, String> entry : options.entrySet()) {
               appendOption(result, entry.getKey(), entry.getValue());
           }
-      }
-      appendOption(result, PROJECT_NAME, xcodeContext.getProjectName() + XCodeConstants.XCODE_PROJECT_EXTENTION);
-      appendOption(result, CONFIGURATION, configuration);
-      if (sdk != null && !sdk.trim().isEmpty()) {
-          appendOption(result, SDK, sdk);
-      }
-      if (xcodeContext.getTarget() != null && !xcodeContext.getTarget().isEmpty()) {
-          appendOption(result, CommandLineBuilder.TARGET, xcodeContext.getTarget());
       }
   }
 

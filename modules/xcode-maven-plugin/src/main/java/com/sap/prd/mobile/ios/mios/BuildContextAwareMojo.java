@@ -76,7 +76,10 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
    */
   private String productName;
 
-  protected XCodeContext getXCodeContext(final XCodeContext.SourceCodeLocation sourceCodeLocation)
+  protected XCodeContext getXCodeContext(final XCodeContext.SourceCodeLocation sourceCodeLocation) {
+    return getXCodeContext(sourceCodeLocation, null, null);
+  }
+  protected XCodeContext getXCodeContext(final XCodeContext.SourceCodeLocation sourceCodeLocation, String configuration, String sdk)
   {
     final String projectName = project.getArtifactId();
     File projectDirectory = null;
@@ -97,11 +100,17 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
       managedSettings.put(Settings.PROVISIONING_PROFILE, provisioningProfile);
 
     Settings settings = new Settings(null, managedSettings);
-    
+
     HashMap<String, String> managedOptions = new HashMap<String, String>();
+
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), configuration);
+    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), sdk);
+    
     if(target != null && !target.trim().isEmpty())
-      managedOptions.put(Options.TARGET, target);
+      managedOptions.put(Options.ManagedOption.TARGET.toLowerCase(), target);
+
     Options options = new Options(null, managedOptions);
+
     return new XCodeContext(projectName, getBuildActions(), projectDirectory, System.out, settings, options);
   }
 

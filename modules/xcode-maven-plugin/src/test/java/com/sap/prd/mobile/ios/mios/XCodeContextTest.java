@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -50,13 +51,19 @@ public class XCodeContextTest
 
     final String projectName = "MyLibrary";
 
+    Map<String, String> managedOptions = new HashMap<String, String>();
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), projectName + ".xcodeproj");
+    Options options = new Options(null, managedOptions);
+
     HashMap<String, String> managedSettings = new HashMap<String, String>();
     managedSettings.put(Settings.CODE_SIGN_IDENTITY, "MyCodeSignIdentity");
     managedSettings.put(Settings.PROVISIONING_PROFILE, "MyProvisioningProfile");
     Settings settings = new Settings(null, managedSettings);
 
     final XCodeContext xCodeContext = new XCodeContext(projectName, Arrays.asList("clean",
-          "build"), projectDirectory, System.out, settings, null);
+          "build"), projectDirectory, System.out, settings, options);
 
     
     assertEquals(projectName, xCodeContext.getProjectName());
@@ -111,18 +118,30 @@ public class XCodeContextTest
   @Test
   public void testCodeSignIdentityIsNull() throws Exception
   {
-    final XCodeContext xCodeContext = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory,System.out);
+    Map<String, String> managedOptions = new HashMap<String, String>();
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
+    Options options = new Options(null, managedOptions);
+
+    final XCodeContext xCodeContext = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory,System.out, null, options);
     Assert.assertNull(xCodeContext.getCodeSignIdentity());
   }
 
   @Test
   public void testCodeSignIdentityIsEmpty() throws Exception
   {
+    Map<String, String> managedOptions = new HashMap<String, String>();
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
+    Options options = new Options(null, managedOptions);
+
     HashMap<String, String> managedSettings = new HashMap<String, String>();
     managedSettings.put(Settings.CODE_SIGN_IDENTITY, "");
     Settings settings = new Settings(null, managedSettings);
     
-    XCodeContext context = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, null);
+    XCodeContext context = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
     
     assertEquals("", context.getCodeSignIdentity());
     
@@ -131,7 +150,13 @@ public class XCodeContextTest
   @Test
   public void testProvisioningProfileIsNull() throws Exception
   {
-    final XCodeContext xCodeContext = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out);
+    Map<String, String> managedOptions = new HashMap<String, String>();
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
+    Options options = new Options(null, managedOptions);
+
+    final XCodeContext xCodeContext = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
     Assert.assertNull(xCodeContext.getProvisioningProfile());
   }
 }

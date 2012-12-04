@@ -57,7 +57,7 @@ class EffectiveBuildSettings
     Properties _buildSettings = buildSettings.get(key);
     
     if(_buildSettings == null) {
-      _buildSettings = extractBuildSettings(context, configuration, sdk);
+      _buildSettings = extractBuildSettings(context);
       buildSettings.put(key, _buildSettings);
       debug(log, "Build settings for key: '" + key + " loaded.");
     }else{
@@ -67,9 +67,9 @@ class EffectiveBuildSettings
     return _buildSettings;
   }
   
-  private static Properties extractBuildSettings(final XCodeContext context, final String configuration, final String sdk) throws  XCodeException
+  private static Properties extractBuildSettings(final XCodeContext context) throws  XCodeException
   { 
-    final CommandLineBuilder cmdLineBuilder = new CommandLineBuilder(configuration, sdk, context);
+    final CommandLineBuilder cmdLineBuilder = new CommandLineBuilder(context);
     PrintStream out = null;
     try {
       ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -80,7 +80,7 @@ class EffectiveBuildSettings
 
       if (returnValue != 0) {
         throw new XCodeException("Could not execute xcodebuild -showBuildSettings command for configuration "
-              + configuration + " and sdk " + sdk);
+              + context.getOptions().getOptions().get(Options.ManagedOption.CONFIGURATION.toLowerCase()) + " and sdk " + context.getOptions().getOptions().get(Options.ManagedOption.SDK.toLowerCase()));
       }
 
       out.flush();

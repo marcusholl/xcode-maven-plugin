@@ -26,13 +26,9 @@ class CommandLineBuilder {
     private final static String XCODEBUILD = "xcodebuild";
     final static String TARGET = "target";
 
-    private String configuration;
-    private String sdk;
     private XCodeContext xcodeContext;
 
-    public CommandLineBuilder(String configuration, String sdk, XCodeContext ctx) {
-        this.configuration = configuration;
-        this.sdk = sdk;
+    public CommandLineBuilder(XCodeContext ctx) {
         this.xcodeContext = ctx;
     }
 
@@ -53,7 +49,7 @@ class CommandLineBuilder {
     private List<String> createBaseCall() {
         List<String> result = new ArrayList<String>();
         result.add(XCODEBUILD);
-        Options.appendOptions(xcodeContext, result, sdk, configuration);
+        Options.appendOptions(xcodeContext, result);
         Settings.appendSettings(xcodeContext.getSettings(), result);
         return result;
     }
