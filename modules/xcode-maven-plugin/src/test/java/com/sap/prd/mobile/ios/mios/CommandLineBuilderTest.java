@@ -106,23 +106,6 @@ public class CommandLineBuilderTest
     assertTrue(Arrays.asList(commandLineBuilder.createBuildCall()).contains("CODE_SIGN_IDENTITY=MyCodeSignIdentity"));
   }
 
-  @Test
-  public void testCodeSignIdentityIsNull() throws Exception
-  {
-
-    Map<String, String> userSettings = null, managedSettings = new HashMap<String, String>();
-    managedSettings.put("CODE_SIGN_IDENTITY", null);
-    Settings settings = new Settings(userSettings, managedSettings);
-
-    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, null);
-    CommandLineBuilder commandLineBuilder = new CommandLineBuilder("Release", "mysdk", context);
-
-    for (String param : commandLineBuilder.createBuildCall()) {
-      assertFalse("The command line must not contain a parameter 'CODE_SIGN_IDENTITY='",
-            param.contains("CODE_SIGN_IDENTITY="));
-    }
-  }
-
   @Test(expected = IllegalArgumentException.class)
   public void testCodeSignIdentityIsEmpty() throws Exception
   {

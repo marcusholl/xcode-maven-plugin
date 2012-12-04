@@ -50,18 +50,19 @@ class Settings {
       
       for(Map.Entry<String, String> e : managedSettings.entrySet()) {
 
-        if(e.getKey() == null || e.getKey().isEmpty())
+        if(e.getKey() == null || e.getKey().trim().isEmpty())
           throw new IllegalArgumentException("Empty key found in settings. Value was: '" + e.getValue() + "'.");
-        if(e.getValue() == null || e.getValue().trim().length() == 0) {
+        
+        if(e.getValue() == null) {
           
-          if(e.getKey().equals(CODE_SIGN_IDENTITY) && e.getValue() != null) {
+          if(e.getKey().equals(CODE_SIGN_IDENTITY)) {
             throw new IllegalArgumentException("CodesignIdentity was empty: '" + e.getValue()
                   + "'. If you want to use the code"
                   + " sign identity defined in the xCode project configuration just do"
                   + " not provide the 'codeSignIdentity' in your Maven settings.");
           }
 
-          continue; // todo logging
+          throw new IllegalArgumentException("No value provided for key '" + e.getKey() + "'.");
         }
 
         _managedSettings.put(e.getKey(), e.getValue());

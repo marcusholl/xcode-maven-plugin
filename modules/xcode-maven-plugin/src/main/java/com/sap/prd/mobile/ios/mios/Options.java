@@ -72,6 +72,8 @@ class Options {
   }
 
   private static void appendOption(List<String> result, String key, String value) {
+     
+     CommandLineBuilder.check(key, value);
      CommandLineBuilder.appendKey(result, key);
      CommandLineBuilder.appendValue(result, value);
  }

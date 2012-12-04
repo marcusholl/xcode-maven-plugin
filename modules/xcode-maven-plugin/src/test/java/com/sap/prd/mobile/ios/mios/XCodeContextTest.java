@@ -115,14 +115,17 @@ public class XCodeContextTest
     Assert.assertNull(xCodeContext.getCodeSignIdentity());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void testCodeSignIdentityIsEmpty() throws Exception
   {
     HashMap<String, String> managedSettings = new HashMap<String, String>();
     managedSettings.put(Settings.CODE_SIGN_IDENTITY, "");
     Settings settings = new Settings(null, managedSettings);
     
-    new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, null);
+    XCodeContext context = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, null);
+    
+    assertEquals("", context.getCodeSignIdentity());
+    
   }
   
   @Test

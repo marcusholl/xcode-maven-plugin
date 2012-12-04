@@ -68,9 +68,9 @@ class CommandLineBuilder {
         result.add(value);
     }
 
-    private static void check(final String name, final String forCheck) {
+    static void check(final String name, final String forCheck) {
         if (forCheck == null || forCheck.isEmpty())
-            throw new IllegalStateException("Invalid " + name + ": " + forCheck + "'. Was null or empty.");
+            throw new IllegalStateException("Invalid " + name + ": '" + forCheck + "'. Was null or empty.");
     }
 
     @Override
