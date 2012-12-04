@@ -11,6 +11,15 @@ class Options {
   enum ManagedOption {
     PROJECT(true), CONFIGURATION(true), SDK(false), TARGET(false);
 
+    static ManagedOption forName(String name) {
+      for (ManagedOption value : values()) {
+        if(value.name().equals(name)) {
+          return value;
+        }
+      }
+      return null;
+    }
+    
     private final boolean required;
     ManagedOption(boolean required) {
       this.required = required;
@@ -72,6 +81,11 @@ class Options {
      for(ManagedOption option : ManagedOption.values()) {
        if(option.isRequired() && !managedOptions.containsKey(option.toLowerCase()))
          throw new IllegalArgumentException("Required option '" + option.toLowerCase() + "' was not available inside the managed options.");
+     }
+
+     for(String key : managedOptions.keySet()) {
+       if(ManagedOption.forName(key.toUpperCase()) == null)
+         throw new IllegalArgumentException("Option '" + key + "' is not managed by the plugin. This option must not be provided as managed option.");
      }
 
      return managedOptions;

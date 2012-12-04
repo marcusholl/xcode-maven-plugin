@@ -101,7 +101,7 @@ class XCodeContext
 
   public String getCodeSignIdentity()
   {
-    return settings.getSettings().get(Settings.CODE_SIGN_IDENTITY);
+    return settings.getSettings().get(Settings.ManagedSetting.CODE_SIGN_IDENTITY.name());
   }
 
   public File getProjectRootDirectory()
@@ -132,7 +132,7 @@ class XCodeContext
   
   public String getProvisioningProfile()
   {
-    return getSettings().getSettings().get(Settings.PROVISIONING_PROFILE);
+    return getSettings().getSettings().get(Settings.ManagedSetting.PROVISIONING_PROFILE.name());
   }
 
   public String getTarget()

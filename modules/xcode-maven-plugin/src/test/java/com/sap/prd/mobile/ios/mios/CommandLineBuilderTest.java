@@ -142,7 +142,7 @@ public class CommandLineBuilderTest
 
     
     HashMap<String, String> managedSettings = new HashMap<String, String>();
-    managedSettings.put(Settings.CODE_SIGN_IDENTITY, "");
+    managedSettings.put(Settings.ManagedSetting.CODE_SIGN_IDENTITY.name(), "");
     Settings settings = new Settings(null, managedSettings);
     XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), null, System.out, settings, options);
     new CommandLineBuilder(context);

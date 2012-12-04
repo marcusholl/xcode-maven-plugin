@@ -91,10 +91,10 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
 
     HashMap<String, String> managedSettings = new HashMap<String, String>();
     if(codeSignIdentity != null && !codeSignIdentity.trim().isEmpty())
-      managedSettings.put(Settings.CODE_SIGN_IDENTITY, codeSignIdentity);
+      managedSettings.put(Settings.ManagedSetting.CODE_SIGN_IDENTITY.name(), codeSignIdentity);
 
     if(provisioningProfile != null)
-      managedSettings.put(Settings.PROVISIONING_PROFILE, provisioningProfile);
+      managedSettings.put(Settings.ManagedSetting.PROVISIONING_PROFILE.name(), provisioningProfile);
 
     Settings settings = new Settings(null, managedSettings);
 

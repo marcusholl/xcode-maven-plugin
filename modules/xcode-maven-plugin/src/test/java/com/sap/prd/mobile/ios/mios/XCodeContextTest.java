@@ -58,8 +58,8 @@ public class XCodeContextTest
     Options options = new Options(null, managedOptions);
 
     HashMap<String, String> managedSettings = new HashMap<String, String>();
-    managedSettings.put(Settings.CODE_SIGN_IDENTITY, "MyCodeSignIdentity");
-    managedSettings.put(Settings.PROVISIONING_PROFILE, "MyProvisioningProfile");
+    managedSettings.put(Settings.ManagedSetting.CODE_SIGN_IDENTITY.name(), "MyCodeSignIdentity");
+    managedSettings.put(Settings.ManagedSetting.PROVISIONING_PROFILE.name(), "MyProvisioningProfile");
     Settings settings = new Settings(null, managedSettings);
 
     final XCodeContext xCodeContext = new XCodeContext(Arrays.asList("clean",
@@ -138,7 +138,7 @@ public class XCodeContextTest
     Options options = new Options(null, managedOptions);
 
     HashMap<String, String> managedSettings = new HashMap<String, String>();
-    managedSettings.put(Settings.CODE_SIGN_IDENTITY, "");
+    managedSettings.put(Settings.ManagedSetting.CODE_SIGN_IDENTITY.name(), "");
     Settings settings = new Settings(null, managedSettings);
     
     XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
