@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
 
@@ -75,6 +76,20 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
    * @parameter expression="${product.name}"
    */
   private String productName;
+  
+  /**
+   * Settings to pass to XCode - if any are explicitly defined here, this plugin will not provide default settings to XCode.
+   * @parameter
+   * @since 1.6.2
+   */
+private Map<String, String> settings;
+
+  /**
+   * Options to pass to XCode - if any are explicitly defined here, this plugin will not provide default options to XCode.
+   * @parameter
+   * @since 1.6.2
+   */
+private Map<String, String> options;
 
   protected XCodeContext getXCodeContext(final XCodeContext.SourceCodeLocation sourceCodeLocation, String configuration, String sdk)
   {
@@ -96,8 +111,6 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
     if(provisioningProfile != null)
       managedSettings.put(Settings.ManagedSetting.PROVISIONING_PROFILE.name(), provisioningProfile);
 
-    Settings settings = new Settings(null, managedSettings);
-
     HashMap<String, String> managedOptions = new HashMap<String, String>();
 
     managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), configuration);
@@ -108,9 +121,7 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
     if(target != null && !target.trim().isEmpty())
       managedOptions.put(Options.ManagedOption.TARGET.toLowerCase(), target);
 
-    Options options = new Options(null, managedOptions);
-
-    return new XCodeContext(getBuildActions(), projectDirectory, System.out, settings, options);
+    return new XCodeContext(getBuildActions(), projectDirectory, System.out, new Settings(settings, managedSettings), new Options(options, managedOptions));
   }
 
   protected List<String> getBuildActions()
