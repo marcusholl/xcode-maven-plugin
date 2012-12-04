@@ -149,10 +149,9 @@ class XCodeContext
     }
 
    private static String toString(String prefix, Map<String, String> map, String separator) {
-       if (map == null) return "";
        StringBuffer buffer = new StringBuffer();
        for (Map.Entry<String, String> entry : map.entrySet()){
-           buffer.append(prefix).append(entry.getKey()).append(separator).append(entry.getValue());
+           buffer.append(prefix).append(entry.getKey()).append(separator).append(entry.getValue()).append(ls);
        }
        return buffer.toString();
    }
@@ -161,11 +160,11 @@ class XCodeContext
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();
+    sb.append(ls).append("CONTEXT:").append(getClass().getName()).append(ls);
     sb.append("ProjectRootDirectory: ").append(getProjectRootDirectory()).append(ls);
-    sb.append("ProjectName         : ").append(getProjectName()).append(ls);
-    sb.append("BuildActions        : ").append(buildActions).append(ls);
-    sb.append("Options             : ").append(toString(" -", options.getOptions(), " "));
-    sb.append("Settings            : ").append(toString(" ", settings.getSettings(), "="));
+    sb.append("BuildActions: ").append(buildActions).append(ls);
+    sb.append("Options: ").append(ls).append(toString(" -", options.getOptions(), " "));
+    sb.append("Settings: ").append(ls).append(toString(" ", settings.getSettings(), "="));
     return sb.toString();
   }
 
