@@ -19,12 +19,13 @@
  */
 package com.sap.prd.mobile.ios.mios;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 class CommandLineBuilder {
 
     private final static String XCODEBUILD = "xcodebuild";
-    final static String TARGET = "target";
 
     private XCodeContext xcodeContext;
 
@@ -49,11 +50,39 @@ class CommandLineBuilder {
     private List<String> createBaseCall() {
         List<String> result = new ArrayList<String>();
         result.add(XCODEBUILD);
-        Options.appendOptions(xcodeContext, result);
-        Settings.appendSettings(xcodeContext.getSettings(), result);
+        appendOptions(xcodeContext, result);
+        appendSettings(xcodeContext.getSettings(), result);
         return result;
     }
 
+  private static void appendOptions(XCodeContext xcodeContext, List<String> result) {
+      Map<String, String> options = xcodeContext.getOptions().getOptions();
+      for (Map.Entry<String, String> entry : options.entrySet()) {
+        appendOption(result, entry.getKey(), entry.getValue());
+      }
+  }
+
+  private static void appendOption(List<String> result, String key, String value) {
+
+     CommandLineBuilder.check(key, value);
+     CommandLineBuilder.appendKey(result, key);
+     CommandLineBuilder.appendValue(result, value);
+   }
+  
+
+  private static void appendSettings(Settings settings, List<String> result) {
+
+       for (Map.Entry<String, String> entry : settings.getSettings().entrySet()) {
+          appendSetting(result, entry.getKey(), entry.getValue());
+      }
+  }
+
+  private static void appendSetting(List<String> result, String key, String value) {
+      result.add(key + "=" + value);
+  }
+
+
+    
     static void appendKey(List<String> result, String key) {
         check("key", key);
         result.add("-" + key);

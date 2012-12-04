@@ -3,7 +3,6 @@ package com.sap.prd.mobile.ios.mios;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 class Settings {
@@ -119,17 +118,6 @@ class Settings {
       }
     }
     return userSettings;
-  }
-
-  static void appendSettings(Settings settings, List<String> result) {
-
-       for (Map.Entry<String, String> entry : settings.getSettings().entrySet()) {
-          appendSetting(result, entry.getKey(), entry.getValue());
-      }
-  }
-
-  private static void appendSetting(List<String> result, String key, String value) {
-      result.add(key + "=" + value);
   }
 
   @Override

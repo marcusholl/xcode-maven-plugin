@@ -2,7 +2,6 @@ package com.sap.prd.mobile.ios.mios;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 class Options {
@@ -90,22 +89,6 @@ class Options {
 
      return managedOptions;
    }
-
-  static void appendOptions(XCodeContext xcodeContext, List<String> result) {
-      Map<String, String> options = xcodeContext.getOptions().getOptions();
-      if (options != null) {
-          for (Map.Entry<String, String> entry : options.entrySet()) {
-              appendOption(result, entry.getKey(), entry.getValue());
-          }
-      }
-  }
-
-  private static void appendOption(List<String> result, String key, String value) {
-     
-     CommandLineBuilder.check(key, value);
-     CommandLineBuilder.appendKey(result, key);
-     CommandLineBuilder.appendValue(result, value);
- }
 
   @Override
   public int hashCode()
