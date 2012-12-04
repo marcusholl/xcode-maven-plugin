@@ -25,7 +25,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class CommandLineBuilderTest
 
     Options options = new Options(null, managedOptions);
     
-    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
+    XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
     expect(context, "xcodebuild", "-project", "MyLib.xcodeproj", "-sdk",
             "mysdk", "-configuration", "Release", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "SHARED_PRECOMPS_DIR=build", "clean", "build");
   }
@@ -89,7 +88,7 @@ public class CommandLineBuilderTest
       userSettings.put("CONFIGURATION_BUILD_DIR", "/Users/me/projects/myapp/target/xcode/src/main/xcode/build");
       Settings settings = new Settings(userSettings, null);
 
-      XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
+      XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
       expect(context, "xcodebuild", "-project", "MyLib.xcodeproj", "-sdk",
               "mysdk", "-configuration", "Release", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "CONFIGURATION_BUILD_DIR=/Users/me/projects/myapp/target/xcode/src/main/xcode/build", "SHARED_PRECOMPS_DIR=build", "VALID_ARCHS=i386", "clean", "build");
     }
@@ -108,7 +107,7 @@ public class CommandLineBuilderTest
 
       Options options = new Options(userOptions, managedOptions);
 
-      XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
+      XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
       expect(context, "xcodebuild", "-project", "MyLib.xcodeproj", "-arch", "i386", "-sdk",
             "mysdk", "-configuration", "Release", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "SHARED_PRECOMPS_DIR=build", "clean", "build");
     }
@@ -127,7 +126,7 @@ public class CommandLineBuilderTest
     Options options = new Options(null, managedOptions);
 
     
-    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
+    XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
     CommandLineBuilder commandLineBuilder = new CommandLineBuilder(context);
     assertTrue(Arrays.asList(commandLineBuilder.createBuildCall()).contains("CODE_SIGN_IDENTITY=MyCodeSignIdentity"));
   }
@@ -145,7 +144,7 @@ public class CommandLineBuilderTest
     HashMap<String, String> managedSettings = new HashMap<String, String>();
     managedSettings.put(Settings.CODE_SIGN_IDENTITY, "");
     Settings settings = new Settings(null, managedSettings);
-    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), null, System.out, settings, options);
+    XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), null, System.out, settings, options);
     new CommandLineBuilder(context);
   }
 
@@ -164,7 +163,7 @@ public class CommandLineBuilderTest
     Options options = new Options(null, managedOptions);
 
 
-    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
+    XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
     CommandLineBuilder commandLineBuilder = new CommandLineBuilder(context);
     assertTrue(Arrays.asList(commandLineBuilder.createBuildCall()).contains("PROVISIONING_PROFILE=MyProvisioningProfile"));
   }
@@ -178,7 +177,7 @@ public class CommandLineBuilderTest
     managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLib.xcodeproj");
     Options options = new Options(null, managedOptions);
 
-    XCodeContext context = new XCodeContext("MyLib", Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
+    XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
     CommandLineBuilder commandLineBuilder = new CommandLineBuilder(context);
     for (String param : commandLineBuilder.createBuildCall()) {
       assertFalse("The command line must not contain a parameter 'PROVISIONING_PROFILE='",

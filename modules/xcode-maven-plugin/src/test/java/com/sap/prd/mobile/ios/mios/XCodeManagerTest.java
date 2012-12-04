@@ -72,7 +72,7 @@ public class XCodeManagerTest extends XCodeTest
     managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
     managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "iphoneos");
     Options options = new Options(null, managedOptions);
-    final XCodeContext context = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), new File(projectDirectory, "MyLibrary/src/xcode"), System.out, null, options);
+    final XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), new File(projectDirectory, "MyLibrary/src/xcode"), System.out, null, options);
 
     Log log = EasyMock.createMock(Log.class);
     MavenProject mavenProject = EasyMock.createMock(MavenProject.class);
@@ -118,7 +118,7 @@ public class XCodeManagerTest extends XCodeTest
     managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "iphoneos");
     
     Options options = new Options(null, managedOptions);
-    final XCodeContext context = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
+    final XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
     new XCodeManager(log). callXcodeBuild(context);
 
   }
@@ -144,7 +144,7 @@ public class XCodeManagerTest extends XCodeTest
     managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
     
     Options options = new Options(null, managedOptions);
-    final XCodeContext context = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, new PrintStream(
+    final XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, new PrintStream(
           new ByteArrayOutputStream()) {
 
       @Override

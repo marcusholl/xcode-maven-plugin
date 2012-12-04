@@ -105,13 +105,14 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
 
     managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), configuration);
     managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), sdk);
+    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), projectName);
     
     if(target != null && !target.trim().isEmpty())
       managedOptions.put(Options.ManagedOption.TARGET.toLowerCase(), target);
 
     Options options = new Options(null, managedOptions);
 
-    return new XCodeContext(projectName, getBuildActions(), projectDirectory, System.out, settings, options);
+    return new XCodeContext(getBuildActions(), projectDirectory, System.out, settings, options);
   }
 
   protected List<String> getBuildActions()

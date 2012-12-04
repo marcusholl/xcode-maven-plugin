@@ -49,12 +49,12 @@ public class XCodeContextTest
   public void testStraightForward()
   {
 
-    final String projectName = "MyLibrary";
+    final String projectName = "MyLibrary.xcodeproj";
 
     Map<String, String> managedOptions = new HashMap<String, String>();
     managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
     managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), projectName + ".xcodeproj");
+    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), projectName);
     Options options = new Options(null, managedOptions);
 
     HashMap<String, String> managedSettings = new HashMap<String, String>();
@@ -62,7 +62,7 @@ public class XCodeContextTest
     managedSettings.put(Settings.PROVISIONING_PROFILE, "MyProvisioningProfile");
     Settings settings = new Settings(null, managedSettings);
 
-    final XCodeContext xCodeContext = new XCodeContext(projectName, Arrays.asList("clean",
+    final XCodeContext xCodeContext = new XCodeContext(Arrays.asList("clean",
           "build"), projectDirectory, System.out, settings, options);
 
     
@@ -124,7 +124,7 @@ public class XCodeContextTest
     managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
     Options options = new Options(null, managedOptions);
 
-    final XCodeContext xCodeContext = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory,System.out, null, options);
+    final XCodeContext xCodeContext = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory,System.out, null, options);
     Assert.assertNull(xCodeContext.getCodeSignIdentity());
   }
 
@@ -141,7 +141,7 @@ public class XCodeContextTest
     managedSettings.put(Settings.CODE_SIGN_IDENTITY, "");
     Settings settings = new Settings(null, managedSettings);
     
-    XCodeContext context = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
+    XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
     
     assertEquals("", context.getCodeSignIdentity());
     
@@ -156,7 +156,7 @@ public class XCodeContextTest
     managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
     Options options = new Options(null, managedOptions);
 
-    final XCodeContext xCodeContext = new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
+    final XCodeContext xCodeContext = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
     Assert.assertNull(xCodeContext.getProvisioningProfile());
   }
 }

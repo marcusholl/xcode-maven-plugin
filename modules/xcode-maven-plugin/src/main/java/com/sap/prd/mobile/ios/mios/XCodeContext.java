@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -46,8 +45,6 @@ class XCodeContext
 
   private final static String ls = System.getProperty("line.separator");
 
-  private final String projectName;
-
   private final List<String> buildActions;
 
   private final File projectRootDirectory;
@@ -60,21 +57,19 @@ class XCodeContext
 
   public XCodeContext(String projectName, List<String> buildActions,
         File projectRootDirectory, PrintStream out) {
-    this(projectName, buildActions, projectRootDirectory, out, null, null);
+    this(buildActions, projectRootDirectory, out, null, null);
 }
 
-  public XCodeContext(String projectName, List<String> buildActions,
+  public XCodeContext(List<String> buildActions,
         File projectRootDirectory, PrintStream out, Settings settings, Options options)
   {
     super();
 
-    raiseExceptionIfNullOrEmpty("projectName", projectName);
     raiseExceptionIfInvalid("buildActions", buildActions);
 
     if(projectRootDirectory == null || !projectRootDirectory.canRead())
       throw new IllegalArgumentException("ProjectRootDirectory '" + projectRootDirectory + "' is null or cannot be read.");
 
-    this.projectName = projectName;
     this.buildActions = Collections.unmodifiableList(buildActions);
     this.projectRootDirectory = projectRootDirectory;
     setOut(out);
@@ -96,7 +91,7 @@ class XCodeContext
 
   public String getProjectName()
   {
-    return projectName;
+    return options.getOptions().get(Options.ManagedOption.PROJECT.toLowerCase());
   }
 
   public List<String> getBuildActions()
@@ -172,7 +167,6 @@ class XCodeContext
     final int prime = 31;
     int result = 1;
     result = prime * result + ((buildActions == null) ? 0 : buildActions.hashCode());
-    result = prime * result + ((projectName == null) ? 0 : projectName.hashCode());
     result = prime * result + ((projectRootDirectory == null) ? 0 : projectRootDirectory.hashCode());
     return result;
   }
@@ -188,21 +182,11 @@ class XCodeContext
       if (other.buildActions != null) return false;
     }
     else if (!buildActions.equals(other.buildActions)) return false;
-    if (projectName == null) {
-      if (other.projectName != null) return false;
-    }
-    else if (!projectName.equals(other.projectName)) return false;
     if (projectRootDirectory == null) {
       if (other.projectRootDirectory != null) return false;
     }
     else if (!projectRootDirectory.equals(other.projectRootDirectory)) return false;
     return true;
-  }
-
-  private static void raiseExceptionIfNullOrEmpty(final String key, final String value)
-  {
-    if (value == null || value.trim().length() == 0)
-      throw new IllegalArgumentException(String.format(Locale.ENGLISH, "No %s provided. Was null or empty.", key));
   }
 
   private static void raiseExceptionIfInvalid(final String key, final Collection<String> collection)
