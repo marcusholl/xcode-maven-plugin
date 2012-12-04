@@ -121,6 +121,15 @@ class XCodeContext
     this.out = out;
   }
 
+  public String getSDK() {
+    return getOptions().getOptions().get(Options.ManagedOption.SDK.toLowerCase());
+  }
+
+  public String getConfiguration() {
+    return getOptions().getOptions().get(Options.ManagedOption.CONFIGURATION.toLowerCase());
+  }
+
+  
   public String getProvisioningProfile()
   {
     return getSettings().getSettings().get(Settings.PROVISIONING_PROFILE);
