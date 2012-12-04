@@ -42,26 +42,25 @@ class EffectiveBuildSettings
   static final String PUBLIC_HEADERS_FOLDER_PATH = "PUBLIC_HEADERS_FOLDER_PATH";
   static final String BUILT_PRODUCTS_DIR = "BUILT_PRODUCTS_DIR";
   
-  private final static Map<Key, Properties> buildSettings = new HashMap<Key, Properties>();
+  private final static Map<XCodeContext, Properties> buildSettings = new HashMap<XCodeContext, Properties>();
   
-  static String getBuildSetting(XCodeContext context, Log log, String configuration, String sdk, String key) throws XCodeException
+  static String getBuildSetting(XCodeContext context, Log log, String key) throws XCodeException
   {
-    String buildSetting = getBuildSettings(context, log, configuration, sdk).getProperty(key);
-    debug(log, "Build settings for context '" + context + " configuration: '" + configuration + "' sdk: '" + sdk + "' key: '" + key + "' resolved to: " + buildSetting);
+    String buildSetting = getBuildSettings(context, log).getProperty(key);
+    debug(log, "Build settings for context '" + context + "'. Key: '" + key + "' resolved to: " + buildSetting);
     return buildSetting;
   }
   
-  private static synchronized Properties getBuildSettings(final XCodeContext context, final Log log, final String configuration, final String sdk) throws XCodeException {
+  private static synchronized Properties getBuildSettings(final XCodeContext context, final Log log) throws XCodeException {
     
-    final Key key = new Key(context, configuration, sdk);
-    Properties _buildSettings = buildSettings.get(key);
+    Properties _buildSettings = buildSettings.get(context);
     
     if(_buildSettings == null) {
       _buildSettings = extractBuildSettings(context);
-      buildSettings.put(key, _buildSettings);
-      debug(log, "Build settings for key: '" + key + " loaded.");
+      buildSettings.put(context, _buildSettings);
+      debug(log, "Build settings for context: '" + context + " loaded.");
     }else{
-      debug(log, "Build settings for key: '" + key + " found in cache.");
+      debug(log, "Build settings for key: '" + context + " found in cache.");
     }
       
     return _buildSettings;
@@ -93,66 +92,6 @@ class EffectiveBuildSettings
     }
     finally {
       IOUtils.closeQuietly(out);
-    }
-  }
-  
-  private static class Key {
-    
-   private final XCodeContext context;
-   
-    private final String configuration, sdk;
-    
-    Key(XCodeContext context, String configuration, String sdk) {
-      
-      if(configuration == null || configuration.isEmpty())
-        throw new IllegalArgumentException("Configuration was not provided.");
-      
-      if(sdk == null || sdk.isEmpty())
-        throw new IllegalArgumentException("SDK was not provided.");
-      
-      if(context == null)
-        throw new IllegalArgumentException("Xcode Context was not provided.");
-        
-      
-      this.configuration = configuration;
-      this.sdk = sdk;
-      this.context = context;
-    }
-
-    @Override
-    public String toString()
-    {
-      return "Key [Context=" + context + ", configuration=" + configuration + ", sdk=" + sdk + "]";
-    }
-
-    @Override
-    public int hashCode()
-    {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((configuration == null) ? 0 : configuration.hashCode());
-      result = prime * result + ((context == null) ? 0 : context.hashCode());
-      result = prime * result + ((sdk == null) ? 0 : sdk.hashCode());
-      return result;
-    }
-
-    @Override
-    public boolean equals(Object obj)
-    {
-      if (this == obj) return true;
-      if (obj == null) return false;
-      if (getClass() != obj.getClass()) return false;
-      Key other = (Key) obj;
-      if (configuration == null) {
-        if (other.configuration != null) return false;
-      }
-      else if (!configuration.equals(other.configuration)) return false;
-      if (context != other.context) return false;
-      if (sdk == null) {
-        if (other.sdk != null) return false;
-      }
-      else if (!sdk.equals(other.sdk)) return false;
-      return true;
     }
   }
   
