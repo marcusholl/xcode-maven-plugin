@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-class Settings {
+final class Settings {
 
   private final static String XCODE_OUTPUT_DIRECTORY = "build";
   
@@ -43,6 +43,7 @@ class Settings {
 
       return null;
     }
+
     ManagedSetting(boolean required, String defaultValue)
     {
       this.required = required;
@@ -59,7 +60,7 @@ class Settings {
     }
   };
 
-  final static Map<String, String> REQUIRED = new LinkedHashMap<String, String>(7);
+  private final static Map<String, String> REQUIRED = new LinkedHashMap<String, String>(7);
 
   static {
     // Output directories should be specified (recommended by Apple - http://developer.apple.com/devcenter/download.action?path=/wwdc_2012/wwdc_2012_session_pdfs/session_404__building_from_the_command_line_with_xcode.pdf)
@@ -70,7 +71,7 @@ class Settings {
     }
   }
 
-  private Map<String, String> userSettings, managedSettings; 
+  private final Map<String, String> userSettings, managedSettings; 
 
   Settings(Map<String, String> userSettings, Map<String, String> managedSettings) {
 
@@ -116,7 +117,7 @@ class Settings {
     }
   }
 
-  Map<String, String> getSettings() {
+  final Map<String, String> getSettings() {
     Map<String, String> result = new HashMap<String, String>(this.userSettings.size() + this.managedSettings.size());
     result.putAll(this.userSettings);
     result.putAll(this.managedSettings);

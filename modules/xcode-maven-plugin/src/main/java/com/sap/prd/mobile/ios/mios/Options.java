@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-class Options {
+final class Options {
 
   enum ManagedOption {
     PROJECT(true), CONFIGURATION(true), SDK(false), TARGET(false);
@@ -51,7 +51,7 @@ class Options {
     }
   }
 
-  private Map<String, String> userOptions, managedOptions;
+  private final Map<String, String> userOptions, managedOptions;
 
   Options(Map<String, String> userOptions, Map<String, String> managedOptions) {
 
