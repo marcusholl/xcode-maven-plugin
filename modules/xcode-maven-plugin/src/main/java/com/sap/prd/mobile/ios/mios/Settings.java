@@ -120,6 +120,14 @@ class Settings {
     return userSettings;
   }
 
+  
+  
+  @Override
+  public String toString()
+  {
+    return "Settings [userSettings=" + userSettings + ", managedSettings=" + managedSettings + "]";
+  }
+
   @Override
   public int hashCode()
   {

@@ -6,7 +6,6 @@ import java.util.Map;
 
 class Options {
 
-
   enum ManagedOption {
     PROJECT(true), CONFIGURATION(true), SDK(false), TARGET(false);
 
@@ -65,7 +64,7 @@ class Options {
     * @throws IllegalArgumentException if the userOptions contain a key of an XCode option that is managed by
     *            the plugin.
     */
-   final static Map<String, String> validateUserOptions(Map<String, String> userOptions) {
+   private final static Map<String, String> validateUserOptions(Map<String, String> userOptions) {
 
      for(ManagedOption option : ManagedOption.values()) {
        if(userOptions.keySet().contains(option.toLowerCase()))
@@ -75,7 +74,7 @@ class Options {
      return userOptions;
    }
 
-   final static Map<String, String> validateManagedOptions(Map<String, String> managedOptions) {
+   private final static Map<String, String> validateManagedOptions(Map<String, String> managedOptions) {
 
      for(ManagedOption option : ManagedOption.values()) {
        if(option.isRequired() && !managedOptions.containsKey(option.toLowerCase()))
@@ -89,6 +88,12 @@ class Options {
 
      return managedOptions;
    }
+
+  @Override
+  public String toString()
+  {
+    return "Options [userOptions=" + userOptions + ", managedOptions=" + managedOptions + "]";
+  }
 
   @Override
   public int hashCode()
