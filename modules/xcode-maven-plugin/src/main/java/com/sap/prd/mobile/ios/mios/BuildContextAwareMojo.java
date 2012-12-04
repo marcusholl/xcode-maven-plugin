@@ -76,9 +76,6 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
    */
   private String productName;
 
-  protected XCodeContext getXCodeContext(final XCodeContext.SourceCodeLocation sourceCodeLocation) {
-    return getXCodeContext(sourceCodeLocation, null, null);
-  }
   protected XCodeContext getXCodeContext(final XCodeContext.SourceCodeLocation sourceCodeLocation, String configuration, String sdk)
   {
     final String projectName = project.getArtifactId();
