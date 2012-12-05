@@ -111,7 +111,13 @@ final class Options {
   @Override
   public String toString()
   {
-    return "Options [userOptions=" + userOptions + ", managedOptions=" + managedOptions + "]";
+      final String ls = System.getProperty("line.separator");
+      StringBuffer buffer = new StringBuffer();
+      buffer.append(super.toString()).append(ls);
+      for (Map.Entry<String, String> entry : getOptions().entrySet()){
+          buffer.append(" -").append(entry.getKey()).append(" ").append(entry.getValue()).append(ls);
+      }
+      return buffer.toString();
   }
 
   @Override

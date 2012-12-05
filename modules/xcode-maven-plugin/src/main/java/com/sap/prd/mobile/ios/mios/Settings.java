@@ -145,7 +145,13 @@ final class Settings {
   @Override
   public String toString()
   {
-    return "Settings [userSettings=" + userSettings + ", managedSettings=" + managedSettings + "]";
+    final String ls = System.getProperty("line.separator");
+    StringBuffer buffer = new StringBuffer();
+    buffer.append(super.toString()).append(ls);
+    for (Map.Entry<String, String> entry : getSettings().entrySet()){
+        buffer.append(" ").append(entry.getKey()).append("=").append(entry.getValue()).append(ls);
+    }
+    return buffer.toString();
   }
 
   @Override

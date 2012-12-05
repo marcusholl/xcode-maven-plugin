@@ -149,23 +149,15 @@ class XCodeContext
         return settings;
     }
 
-   private static String toString(String prefix, Map<String, String> map, String separator) {
-       StringBuffer buffer = new StringBuffer();
-       for (Map.Entry<String, String> entry : map.entrySet()){
-           buffer.append(prefix).append(entry.getKey()).append(separator).append(entry.getValue()).append(ls);
-       }
-       return buffer.toString();
-   }
-
     @Override
   public String toString()
   {
     final StringBuilder sb = new StringBuilder();
-    sb.append(ls).append("CONTEXT:").append(getClass().getName()).append(ls);
+    sb.append(ls).append(super.toString()).append(ls);
     sb.append("ProjectRootDirectory: ").append(getProjectRootDirectory()).append(ls);
     sb.append("BuildActions: ").append(buildActions).append(ls);
-    sb.append("Options: ").append(ls).append(toString(" -", options.getOptions(), " "));
-    sb.append("Settings: ").append(ls).append(toString(" ", settings.getSettings(), "="));
+    sb.append(options).append(ls);
+    sb.append(settings).append(ls);
     return sb.toString();
   }
 
