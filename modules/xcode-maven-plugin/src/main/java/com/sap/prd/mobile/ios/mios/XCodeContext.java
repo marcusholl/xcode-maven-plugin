@@ -21,6 +21,7 @@ package com.sap.prd.mobile.ios.mios;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,8 +71,8 @@ class XCodeContext
     if(projectRootDirectory == null || !projectRootDirectory.canRead())
       throw new IllegalArgumentException("ProjectRootDirectory '" + projectRootDirectory + "' is null or cannot be read.");
 
-    this.buildActions = Collections.unmodifiableList(buildActions);
-    this.projectRootDirectory = projectRootDirectory;
+    this.buildActions = Collections.unmodifiableList(new ArrayList<String>(buildActions));
+    this.projectRootDirectory = new File(projectRootDirectory, "");
     setOut(out);
     
     if(settings == null) {

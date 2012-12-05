@@ -26,10 +26,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -158,5 +160,44 @@ public class XCodeContextTest
 
     final XCodeContext xCodeContext = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
     Assert.assertNull(xCodeContext.getProvisioningProfile());
+  }
+  
+  @Test
+  public void testIsImmutable() throws Exception
+  {
+    Map<String, String> userOptions = new HashMap<String, String>();
+    Map<String, String> managedOptions = new HashMap<String, String>();
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
+    Options options = new Options(userOptions, managedOptions);
+
+    HashMap<String, String> userSettings = new HashMap<String, String>();
+    HashMap<String, String> managedSettings = new HashMap<String, String>();
+    managedSettings.put(Settings.ManagedSetting.CODE_SIGN_IDENTITY.name(), "");
+    Settings settings = new Settings(userSettings, managedSettings);
+    
+    List<String> buildActions = new ArrayList<String>(Arrays.asList("clean", "build"));
+
+    File _projectDir = new File(projectDirectory.getParentFile().getCanonicalFile(), "MyLib2");
+    _projectDir.deleteOnExit();
+
+    FileUtils.copyDirectory(projectDirectory, _projectDir);
+
+    final XCodeContext xCodeContext = new XCodeContext(buildActions, _projectDir, System.out, settings, options);
+
+    int hashCode = xCodeContext.hashCode();
+
+    managedOptions.put("managedOptionAddedAfterwards", "xxxx");
+    managedSettings.put("managedSettigAddedAfterwards", "yyyy");
+
+    userOptions.put("userOptionAddedAfterwards", "1111");
+    userSettings.put("userSettigAddedAfterwards", "2222");
+
+    buildActions.add("addedAfterwards");
+
+    _projectDir.renameTo(new File(projectDirectory.getParent(), "MyLib3"));
+
+    assertEquals("Context is not immutable.", hashCode, xCodeContext.hashCode());
   }
 }
