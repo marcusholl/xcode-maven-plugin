@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -183,5 +184,32 @@ public class CommandLineBuilderTest
       assertFalse("The command line must not contain a parameter 'PROVISIONING_PROFILE='",
             param.contains("PROVISIONING_PROFILE="));
     }
+  }
+  
+  @Test
+  public void testCordovaCommandline() throws Exception
+  {
+    //
+    // Should be similiar to
+    //xcodebuild -project $PROJECT_NAME.xcodeproj -arch i386 -target $PROJECT_NAME -configuration Debug -sdk $SDK clean build VALID_ARCHS="i386" CONFIGURATION_BUILD_DIR="$PROJECT_PATH/build"
+    //
+    // PROJECT_NAME, PROJECT_PATH, SDK are environment variables in the shell and are replaced by concrete values.
+    //
+    Map<String, String> managedOptions = new HashMap<String, String>();
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Debug");
+    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "iphoneos");
+    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "Cordova.xcodeproj");
+    managedOptions.put(Options.ManagedOption.TARGET.toLowerCase(), "Cordova");
+    
+    Map<String, String> userOptions = new HashMap<String, String>();
+    userOptions.put("arch", "i386");
+
+    Options options = new Options(userOptions, managedOptions);
+    HashMap<String, String> userSettings = new HashMap<String, String>();
+    userSettings.put("VALID_ARCHS", "i386");
+    userSettings.put("CONFIGURATION_BUILD_DIR", "Cordova/build");
+    Settings settings = new Settings(userSettings, null);
+    XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
+    expect(context, "xcodebuild", "-project", "Cordova.xcodeproj", "-arch", "i386",  "-target", "Cordova", "-sdk", "iphoneos", "-configuration", "Debug", "clean", "build", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "CONFIGURATION_BUILD_DIR=Cordova/build", "SHARED_PRECOMPS_DIR=build", "VALID_ARCHS=i386");
   }
 }
