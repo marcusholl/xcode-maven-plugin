@@ -77,44 +77,44 @@ public class XCodeContextTest
   @Test(expected = IllegalArgumentException.class)
   public void testEmptyBuildActions()
   {
-    new XCodeContext("MyLibrary", new ArrayList<String>(), projectDirectory, System.out);
+    new XCodeContext(new ArrayList<String>(), projectDirectory, System.out, null, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testBuildActionWithEmptyEntry()
   {
-    new XCodeContext("MyLibrary", Arrays.asList("clean", "", "build"), projectDirectory, System.out);
+    new XCodeContext(Arrays.asList("clean", "", "build"), projectDirectory, System.out, null, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void TestBuildActionEntryWithBlank()
   {
-    new XCodeContext("MyLibrary", Arrays.asList("clean", "build foo"), projectDirectory, System.out);
+    new XCodeContext(Arrays.asList("clean", "build foo"), projectDirectory, System.out, null, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testBuildActionWithNullElement()
   {
-    new XCodeContext("MyLibrary", Arrays.asList("clean", null, "build"), projectDirectory, System.out);
+    new XCodeContext(Arrays.asList("clean", null, "build"), projectDirectory, System.out, null, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testXCodeContextWithEmptyProjectName()
   {
-    new XCodeContext("", Arrays.asList("clean", "build"), projectDirectory, System.out);
+    new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testXCodeContextWithoutProjectName()
   {
-    new XCodeContext(null, Arrays.asList("clean", "build"), projectDirectory, System.out);
+    new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, null);
    }
 
 
   @Test(expected = IllegalArgumentException.class)
   public void testXCodeContextWithoutPrintStream()
   {
-    new XCodeContext("MyLibrary", Arrays.asList("clean", "build"), projectDirectory, null);
+    new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, null, null, null);
   }
 
   @Test

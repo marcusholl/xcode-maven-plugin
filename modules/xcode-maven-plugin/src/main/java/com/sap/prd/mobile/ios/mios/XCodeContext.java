@@ -56,11 +56,6 @@ class XCodeContext
 
   private final Settings settings;
 
-  public XCodeContext(String projectName, List<String> buildActions,
-        File projectRootDirectory, PrintStream out) {
-    this(buildActions, projectRootDirectory, out, null, null);
-}
-
   public XCodeContext(List<String> buildActions,
         File projectRootDirectory, PrintStream out, Settings settings, Options options)
   {
