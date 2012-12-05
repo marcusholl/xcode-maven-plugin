@@ -24,7 +24,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -68,7 +70,14 @@ class EffectiveBuildSettings
   
   private static Properties extractBuildSettings(final XCodeContext context) throws  XCodeException
   { 
-    final CommandLineBuilder cmdLineBuilder = new CommandLineBuilder(context);
+    List<String> buildActions = Collections.emptyList();
+    Options options = context.getOptions();
+    Map<String, String> userOptions = new HashMap<String, String>(options.getUserOptions());
+    userOptions.put("showBuildSettings", null);
+
+    XCodeContext showBuildSettingsContext = new XCodeContext(buildActions, context.getProjectRootDirectory(), context.getOut(), context.getSettings(), new Options(userOptions, options.getManagedOptions()));
+    
+    final CommandLineBuilder cmdLineBuilder = new CommandLineBuilder(showBuildSettingsContext);
     PrintStream out = null;
     ByteArrayOutputStream os = null;
     try {
@@ -76,7 +85,7 @@ class EffectiveBuildSettings
       out = new PrintStream(os);
 
       final int returnValue = Forker.forkProcess(out, context.getProjectRootDirectory(),
-            cmdLineBuilder.createShowBuildSettingsCall());
+            cmdLineBuilder.createBuildCall());
 
       if (returnValue != 0) {
         if(out != null)

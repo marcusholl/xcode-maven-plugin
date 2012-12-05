@@ -202,9 +202,6 @@ class XCodeContext
   private static void raiseExceptionIfInvalid(final String key, final Collection<String> collection)
   {
 
-    if (collection == null || collection.size() == 0)
-      throw new IllegalArgumentException("No build actions has been provided (Was either null or empty).");
-
     for (final String buildAction : collection) {
 
       if (buildAction == null || buildAction.length() == 0)

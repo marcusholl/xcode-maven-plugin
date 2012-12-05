@@ -70,7 +70,7 @@ public class CommandLineBuilderTest
     
     XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
     expect(context, "xcodebuild", "-project", "MyLib.xcodeproj", "-sdk",
-            "mysdk", "-configuration", "Release", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "SHARED_PRECOMPS_DIR=build", "clean", "build");
+            "mysdk", "-configuration", "Release", "clean", "build", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "SHARED_PRECOMPS_DIR=build");
   }
 
     @Test
@@ -90,7 +90,7 @@ public class CommandLineBuilderTest
 
       XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, settings, options);
       expect(context, "xcodebuild", "-project", "MyLib.xcodeproj", "-sdk",
-              "mysdk", "-configuration", "Release", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "CONFIGURATION_BUILD_DIR=/Users/me/projects/myapp/target/xcode/src/main/xcode/build", "SHARED_PRECOMPS_DIR=build", "VALID_ARCHS=i386", "clean", "build");
+              "mysdk", "-configuration", "Release", "clean", "build", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "CONFIGURATION_BUILD_DIR=/Users/me/projects/myapp/target/xcode/src/main/xcode/build", "SHARED_PRECOMPS_DIR=build", "VALID_ARCHS=i386");
     }
 
     @Test
@@ -109,7 +109,7 @@ public class CommandLineBuilderTest
 
       XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
       expect(context, "xcodebuild", "-project", "MyLib.xcodeproj", "-arch", "i386", "-sdk",
-            "mysdk", "-configuration", "Release", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "SHARED_PRECOMPS_DIR=build", "clean", "build");
+            "mysdk", "-configuration", "Release", "clean", "build", "OBJROOT=build", "SYMROOT=build", "DSTROOT=build", "SHARED_PRECOMPS_DIR=build");
     }
 
   @Test

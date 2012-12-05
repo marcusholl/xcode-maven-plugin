@@ -69,11 +69,18 @@ final class Options {
     validateUserOptions(this.userOptions);
   }
 
+  Map<String, String> getUserOptions() {
+    return userOptions;
+  }
+  
+  Map<String, String> getManagedOptions() {
+    return managedOptions;
+  }
   Map<String, String> getOptions() {
     final Map<String, String> result = new HashMap<String, String>();
 
-    result.putAll(userOptions);
-    result.putAll(managedOptions);
+    result.putAll(getUserOptions());
+    result.putAll(getManagedOptions());
 
     return result;
   }

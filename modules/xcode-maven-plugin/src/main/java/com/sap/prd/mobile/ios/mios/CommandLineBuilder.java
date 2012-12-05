@@ -34,25 +34,14 @@ class CommandLineBuilder {
     }
 
     String[] createBuildCall() {
-        List<String> result = createBaseCall();
-        for (String buildAction : xcodeContext.getBuildActions()) {
-            appendValue(result, buildAction);
-        }
-        return result.toArray(new String[result.size()]);
-    }
-
-    String[] createShowBuildSettingsCall() {
-        List<String> result = createBaseCall();
-        appendKey(result, "showBuildSettings");
-        return result.toArray(new String[result.size()]);
-    }
-
-    private List<String> createBaseCall() {
         List<String> result = new ArrayList<String>();
         result.add(XCODEBUILD);
         appendOptions(xcodeContext, result);
+        for (String buildAction : xcodeContext.getBuildActions()) {
+            appendValue(result, buildAction);
+        }
         appendSettings(xcodeContext.getSettings(), result);
-        return result;
+        return result.toArray(new String[result.size()]);
     }
 
   private static void appendOptions(XCodeContext xcodeContext, List<String> result) {
@@ -64,9 +53,9 @@ class CommandLineBuilder {
 
   private static void appendOption(List<String> result, String key, String value) {
 
-     CommandLineBuilder.check(key, value);
      CommandLineBuilder.appendKey(result, key);
-     CommandLineBuilder.appendValue(result, value);
+     if(value != null)
+       CommandLineBuilder.appendValue(result, value);
    }
   
 
