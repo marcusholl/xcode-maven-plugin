@@ -122,7 +122,7 @@ final class Options {
       StringBuffer buffer = new StringBuffer();
       buffer.append(super.toString()).append(ls);
       for (Map.Entry<String, String> entry : getOptions().entrySet()){
-          buffer.append(" -").append(entry.getKey()).append(" ").append(entry.getValue()).append(ls);
+          buffer.append(" -").append(entry.getKey()).append(" ").append(entry.getValue() == null ? "" : entry.getValue()).append(ls);
       }
       return buffer.toString();
   }
