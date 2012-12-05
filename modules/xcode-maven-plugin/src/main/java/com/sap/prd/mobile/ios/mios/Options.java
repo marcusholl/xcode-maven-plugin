@@ -26,7 +26,7 @@ import java.util.Map;
 final class Options {
 
   enum ManagedOption {
-    PROJECT(true), CONFIGURATION(true), SDK(false), TARGET(false);
+    PROJECT(true,false), CONFIGURATION(true, false), SDK(false, false), TARGET(false, false);
 
     static ManagedOption forName(String name) {
       for (ManagedOption value : values()) {
@@ -38,8 +38,10 @@ final class Options {
     }
     
     private final boolean required;
-    ManagedOption(boolean required) {
+    private final boolean emptyValue;
+    ManagedOption(boolean required, boolean emptyValue) {
       this.required = required;
+      this.emptyValue = emptyValue;
     }
 
     String toLowerCase() {
@@ -48,6 +50,10 @@ final class Options {
 
     boolean isRequired() {
       return required;
+    }
+    
+    boolean hasEmptyValue() {
+      return emptyValue;
     }
   }
 
@@ -94,7 +100,7 @@ final class Options {
 
      for(ManagedOption option : ManagedOption.values()) {
        if(userOptions.keySet().contains(option.toLowerCase()))
-         throw new IllegalArgumentException("XCode Option '" + option.toLowerCase() + "' is managed by the plugin and cannot be modified by the user.");
+         throw new IllegalOptionException(option, "XCode Option '" + option.toLowerCase() + "' is managed by the plugin and cannot be modified by the user.");
      }
 
      return userOptions;
@@ -103,8 +109,22 @@ final class Options {
    private final static Map<String, String> validateManagedOptions(Map<String, String> managedOptions) {
 
      for(ManagedOption option : ManagedOption.values()) {
+
        if(option.isRequired() && !managedOptions.containsKey(option.toLowerCase()))
-         throw new IllegalArgumentException("Required option '" + option.toLowerCase() + "' was not available inside the managed options.");
+         throw new IllegalOptionException(option, "Required option '" + option.toLowerCase() + "' was not available inside the managed options.");
+
+      if (!managedOptions.containsKey(option.toLowerCase()))
+        continue;
+
+      final String value = managedOptions.get(option.toLowerCase());
+
+      if (!option.hasEmptyValue() && (value == null || value.trim().isEmpty()))
+        throw new IllegalOptionException(option, "Invalid option: " + option.toLowerCase()
+              + " must be provided with a value.");
+      if (option.hasEmptyValue() && (value != null && value.trim().isEmpty()))
+        throw new IllegalOptionException(option, "Invalid option: " + option.toLowerCase()
+              + " must not be provided with a value.");
+
      }
 
      for(String key : managedOptions.keySet()) {
@@ -154,8 +174,20 @@ final class Options {
     else if (!userOptions.equals(other.userOptions)) return false;
     return true;
   }
-  
-  
 
+  static class IllegalOptionException extends IllegalArgumentException {
+
+    private static final long serialVersionUID = -3298815948503432790L;
+
+    private ManagedOption violated;
+
+    IllegalOptionException(ManagedOption vialated, String message) {
+      super(message);
+      this.violated = vialated;
+    }
+    
+    ManagedOption getViolated() {
+      return violated;
+    }
+  }
 }
-

@@ -86,28 +86,42 @@ public class XCodeContextTest
     new XCodeContext(Arrays.asList("clean", "", "build"), projectDirectory, System.out, null, null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = XCodeContext.InvalidBuildActionException.class)
   public void TestBuildActionEntryWithBlank()
   {
     new XCodeContext(Arrays.asList("clean", "build foo"), projectDirectory, System.out, null, null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = XCodeContext.InvalidBuildActionException.class)
   public void testBuildActionWithNullElement()
   {
     new XCodeContext(Arrays.asList("clean", null, "build"), projectDirectory, System.out, null, null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = Options.IllegalOptionException.class)
   public void testXCodeContextWithEmptyProjectName()
   {
-    new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, null);
+    HashMap<String, String> managedOptions = new HashMap<String, String>();
+    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "");
+    Options options = new Options(null, managedOptions);
+    try {
+      new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
+    } catch(Options.IllegalOptionException ex) {
+
+      assertEquals(Options.ManagedOption.PROJECT, ex.getViolated());
+      throw ex;
+    }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = Options.IllegalOptionException.class)
   public void testXCodeContextWithoutProjectName()
   {
-    new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, null);
+    try {
+      new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, null);
+    } catch(Options.IllegalOptionException ex) {
+      assertEquals(Options.ManagedOption.PROJECT, ex.getViolated());
+      throw ex;
+    }
    }
 
 

@@ -61,7 +61,7 @@ class XCodeContext
   {
     super();
 
-    raiseExceptionIfInvalid("buildActions", buildActions);
+    raiseExceptionIfBuildActionsAreInvalid("buildActions", buildActions);
 
     if(projectRootDirectory == null || !projectRootDirectory.canRead())
       throw new IllegalArgumentException("ProjectRootDirectory '" + projectRootDirectory + "' is null or cannot be read.");
@@ -194,16 +194,25 @@ class XCodeContext
       return true;
     }
 
-  private static void raiseExceptionIfInvalid(final String key, final Collection<String> collection)
+  private static void raiseExceptionIfBuildActionsAreInvalid(final String key, final Collection<String> buildActions)
   {
 
-    for (final String buildAction : collection) {
+    for (final String buildAction : buildActions) {
 
       if (buildAction == null || buildAction.length() == 0)
-        throw new IllegalArgumentException("Build action array contained a null element or an empty element.");
+        throw new InvalidBuildActionException("Build action array contained a null element or an empty element.");
 
       if (!buildAction.matches("[A-Za-z0-9_]+"))
-        throw new IllegalArgumentException("Build action array contains an invalid element (" + buildAction + ").");
+        throw new InvalidBuildActionException("Build action array contains an invalid element (" + buildAction + ").");
+    }
+  }
+  
+  static class InvalidBuildActionException extends IllegalArgumentException {
+    
+    private static final long serialVersionUID = 6635006296438188082L;
+
+    InvalidBuildActionException(String message) {
+      super(message);
     }
   }
 }
