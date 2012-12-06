@@ -51,11 +51,21 @@ class XCodeBuildLayout
 
   static File getConfigurationBuildDir(final XCodeContext context, final Log log) throws XCodeException
   {
-    return new File(EffectiveBuildSettings.getBuildSetting(context, log, EffectiveBuildSettings.CONFIGURATION_BUILD_DIR));
+    return new File(getEffectiveBuildSetting(context, log, EffectiveBuildSettings.CONFIGURATION_BUILD_DIR));
   }
 
   static File getBuildDir(final XCodeContext context, final Log log) throws XCodeException
   {
-    return new File(EffectiveBuildSettings.getBuildSetting(context, log, EffectiveBuildSettings.SYMROOT));
+    return new File(getEffectiveBuildSetting(context, log, EffectiveBuildSettings.SYMROOT));
+  }
+  
+  private static String getEffectiveBuildSetting(final XCodeContext context, final Log log, final String name) throws XCodeException{
+
+    String value = EffectiveBuildSettings.getBuildSetting(context, log, name);
+
+    if(value == null || value.trim().isEmpty()) {
+      throw new XCodeException("Parameter '" + name + "' was null or empty (" + value + ") for " + context + ".");
+    }
+    return value;
   }
 }
