@@ -46,7 +46,6 @@ class XCodeBuildLayout
 
   static File getBundleDirectory(final File srcDir, final String bundleName)
   {
-
     return new File(srcDir, bundleName + ".bundle");
   }
 
@@ -55,14 +54,8 @@ class XCodeBuildLayout
     return new File(EffectiveBuildSettings.getBuildSetting(context, log, EffectiveBuildSettings.CONFIGURATION_BUILD_DIR));
   }
 
-  static File getBuildDir(final File baseDirectory)
+  static File getBuildDir(final XCodeContext context, final Log log) throws XCodeException
   {
-
-    if (baseDirectory == null)
-      // exception here is required since File constructor below
-      // does not fail when called with null value for baseDirectory.
-      // We would not be acting fail fast without throwing an exception here.
-      throw new IllegalStateException("baseDirectory was null");
-    return new File(baseDirectory, "build");
+    return new File(EffectiveBuildSettings.getBuildSetting(context, log, EffectiveBuildSettings.SYMROOT));
   }
 }

@@ -35,7 +35,7 @@ import org.apache.maven.project.MavenProjectHelper;
  * 
  * @goal package-fat-lib
  */
-public class XCodeFatLibraryMojo extends AbstractXCodeMojo
+public class XCodeFatLibraryMojo extends BuildContextAwareMojo
 {
 
   public static String FAT_LIBRARY_CLASSIFIER_SUFFIX = "-fat-binary";
@@ -70,7 +70,17 @@ public class XCodeFatLibraryMojo extends AbstractXCodeMojo
     lipoCommand.add("-create");
 
     for (String sdk : getSDKs()) {
-      lipoCommand.add(XCodeBuildLayout.getBinary(XCodeBuildLayout.getBuildDir(getXCodeCompileDirectory()),
+
+      File symroot;
+
+      try {
+        symroot = XCodeBuildLayout.getBuildDir(getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY,  configuration, sdk), getLog());
+      }
+      catch (XCodeException e) {
+        throw new MojoExecutionException(e.getMessage(), e);
+      }
+
+      lipoCommand.add(XCodeBuildLayout.getBinary(symroot,
             configuration, sdk, project.getArtifactId()).getAbsolutePath());
     }
     final File fatBinaryDestDirectory = new File(new File(project.getBuild().getDirectory()), configuration);
