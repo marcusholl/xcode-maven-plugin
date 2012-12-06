@@ -87,7 +87,7 @@ class XCodeContext
 
   public String getProjectName()
   {
-    return options.getOptions().get(Options.ManagedOption.PROJECT.toLowerCase());
+    return options.getOptions().get(Options.ManagedOption.PROJECT.getOptionName());
   }
 
   public List<String> getBuildActions()
@@ -118,11 +118,11 @@ class XCodeContext
   }
 
   public String getSDK() {
-    return getOptions().getOptions().get(Options.ManagedOption.SDK.toLowerCase());
+    return getOptions().getOptions().get(Options.ManagedOption.SDK.getOptionName());
   }
 
   public String getConfiguration() {
-    return getOptions().getOptions().get(Options.ManagedOption.CONFIGURATION.toLowerCase());
+    return getOptions().getOptions().get(Options.ManagedOption.CONFIGURATION.getOptionName());
   }
 
   
@@ -133,7 +133,7 @@ class XCodeContext
 
   public String getTarget()
   {
-    return getOptions().getOptions().get(Options.ManagedOption.TARGET.toLowerCase());
+    return getOptions().getOptions().get(Options.ManagedOption.TARGET.getOptionName());
   }
 
     public Options getOptions() {

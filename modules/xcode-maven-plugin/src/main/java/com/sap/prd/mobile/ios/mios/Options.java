@@ -26,7 +26,7 @@ import java.util.Map;
 final class Options {
 
   enum ManagedOption {
-    PROJECT(true,false), CONFIGURATION(true, false), SDK(false, false), TARGET(false, false);
+    PROJECT(true,false), CONFIGURATION(true, false), SDK(false, false), TARGET(false, false), SHOWBUILDSETTINGS("showBuildSettings", false, true);
 
     static ManagedOption forName(String name) {
       for (ManagedOption value : values()) {
@@ -37,21 +37,27 @@ final class Options {
       return null;
     }
     
+    private String name;
     private final boolean required;
     private final boolean emptyValue;
+
     ManagedOption(boolean required, boolean emptyValue) {
+      this(null, required, emptyValue);
+    }
+    ManagedOption(String name, boolean required, boolean emptyValue) {
+      this.name = name;
       this.required = required;
       this.emptyValue = emptyValue;
-    }
-
-    String toLowerCase() {
-      return name().toLowerCase();
     }
 
     boolean isRequired() {
       return required;
     }
-    
+
+    String getOptionName() {
+      return name == null ? name().toLowerCase() : name;
+    }
+
     boolean hasEmptyValue() {
       return emptyValue;
     }
@@ -99,8 +105,8 @@ final class Options {
    private final static Map<String, String> validateUserOptions(Map<String, String> userOptions) {
 
      for(ManagedOption option : ManagedOption.values()) {
-       if(userOptions.keySet().contains(option.toLowerCase()))
-         throw new IllegalOptionException(option, "XCode Option '" + option.toLowerCase() + "' is managed by the plugin and cannot be modified by the user.");
+       if(userOptions.keySet().contains(option.getOptionName()))
+         throw new IllegalOptionException(option, "XCode Option '" + option.getOptionName() + "' is managed by the plugin and cannot be modified by the user.");
      }
 
      return userOptions;
@@ -110,19 +116,19 @@ final class Options {
 
      for(ManagedOption option : ManagedOption.values()) {
 
-       if(option.isRequired() && !managedOptions.containsKey(option.toLowerCase()))
-         throw new IllegalOptionException(option, "Required option '" + option.toLowerCase() + "' was not available inside the managed options.");
+       if(option.isRequired() && !managedOptions.containsKey(option.getOptionName()))
+         throw new IllegalOptionException(option, "Required option '" + option.getOptionName() + "' was not available inside the managed options.");
 
-      if (!managedOptions.containsKey(option.toLowerCase()))
+      if (!managedOptions.containsKey(option.getOptionName()))
         continue;
 
-      final String value = managedOptions.get(option.toLowerCase());
+      final String value = managedOptions.get(option.getOptionName());
 
       if (!option.hasEmptyValue() && (value == null || value.trim().isEmpty()))
-        throw new IllegalOptionException(option, "Invalid option: " + option.toLowerCase()
+        throw new IllegalOptionException(option, "Invalid option: " + option.getOptionName()
               + " must be provided with a value.");
       if (option.hasEmptyValue() && (value != null && value.trim().isEmpty()))
-        throw new IllegalOptionException(option, "Invalid option: " + option.toLowerCase()
+        throw new IllegalOptionException(option, "Invalid option: " + option.getOptionName()
               + " must not be provided with a value.");
 
      }

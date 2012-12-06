@@ -113,13 +113,13 @@ private Map<String, String> options;
 
     HashMap<String, String> managedOptions = new HashMap<String, String>();
 
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), configuration);
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), projectName + ".xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), configuration);
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), projectName + ".xcodeproj");
     
     if(sdk != null && !sdk.trim().isEmpty())
-      managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), sdk);
+      managedOptions.put(Options.ManagedOption.SDK.getOptionName(), sdk);
     if(target != null && !target.trim().isEmpty())
-      managedOptions.put(Options.ManagedOption.TARGET.toLowerCase(), target);
+      managedOptions.put(Options.ManagedOption.TARGET.getOptionName(), target);
 
     return new XCodeContext(getBuildActions(), projectDirectory, System.out, new Settings(settings, managedSettings), new Options(options, managedOptions));
   }

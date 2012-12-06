@@ -72,10 +72,10 @@ class EffectiveBuildSettings
   { 
     List<String> buildActions = Collections.emptyList();
     Options options = context.getOptions();
-    Map<String, String> userOptions = new HashMap<String, String>(options.getUserOptions());
-    userOptions.put("showBuildSettings", null);
+    Map<String, String> managedOptions = new HashMap<String, String>(options.getManagedOptions());
+    managedOptions.put(Options.ManagedOption.SHOWBUILDSETTINGS.getOptionName(), null);
 
-    XCodeContext showBuildSettingsContext = new XCodeContext(buildActions, context.getProjectRootDirectory(), context.getOut(), context.getSettings(), new Options(userOptions, options.getManagedOptions()));
+    XCodeContext showBuildSettingsContext = new XCodeContext(buildActions, context.getProjectRootDirectory(), context.getOut(), context.getSettings(), new Options(options.getUserOptions(), managedOptions));
     
     final CommandLineBuilder cmdLineBuilder = new CommandLineBuilder(showBuildSettingsContext);
     PrintStream out = null;

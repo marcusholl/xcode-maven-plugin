@@ -62,9 +62,9 @@ public class CommandLineBuilderTest
   public void testCommandlineBuilderStraightForward() throws Exception
   {
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLib.xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLib.xcodeproj");
 
     Options options = new Options(null, managedOptions);
     
@@ -77,9 +77,9 @@ public class CommandLineBuilderTest
     public void testCommandlineBuilderStraightForwardSettings() throws Exception
     {
       Map<String, String> managedOptions = new HashMap<String, String>();
-      managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-      managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-      managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLib.xcodeproj");
+      managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+      managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+      managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLib.xcodeproj");
 
       Options options = new Options(null, managedOptions);
 
@@ -98,9 +98,9 @@ public class CommandLineBuilderTest
     {
       
       Map<String, String> managedOptions = new HashMap<String, String>();
-      managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-      managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-      managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLib.xcodeproj");
+      managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+      managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+      managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLib.xcodeproj");
 
       Map<String, String> userOptions = new LinkedHashMap<String, String>();
       userOptions.put("arch", "i386");
@@ -120,9 +120,9 @@ public class CommandLineBuilderTest
     Settings settings = new Settings(userSettings, managedSettings);
     
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLib.xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLib.xcodeproj");
     Options options = new Options(null, managedOptions);
 
     
@@ -135,9 +135,9 @@ public class CommandLineBuilderTest
   public void testCodeSignIdentityIsEmpty() throws Exception
   {
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLib.xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLib.xcodeproj");
     Options options = new Options(null, managedOptions);
 
     
@@ -157,9 +157,9 @@ public class CommandLineBuilderTest
     Settings settings = new Settings(userSettings, managedSettings);
     
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLib.xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLib.xcodeproj");
     Options options = new Options(null, managedOptions);
 
 
@@ -172,9 +172,9 @@ public class CommandLineBuilderTest
   public void testProvisioningProfileIsNull() throws Exception
   {
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLib.xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLib.xcodeproj");
     Options options = new Options(null, managedOptions);
 
     XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
@@ -195,10 +195,10 @@ public class CommandLineBuilderTest
     // PROJECT_NAME, PROJECT_PATH, SDK are environment variables in the shell and are replaced by concrete values.
     //
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Debug");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "iphoneos");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "Cordova.xcodeproj");
-    managedOptions.put(Options.ManagedOption.TARGET.toLowerCase(), "Cordova");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Debug");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "iphoneos");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "Cordova.xcodeproj");
+    managedOptions.put(Options.ManagedOption.TARGET.getOptionName(), "Cordova");
     
     Map<String, String> userOptions = new HashMap<String, String>();
     userOptions.put("arch", "i386");

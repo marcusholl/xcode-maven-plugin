@@ -68,9 +68,9 @@ public class XCodeManagerTest extends XCodeTest
   {
 
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "iphoneos");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLibrary.xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "iphoneos");
     Options options = new Options(null, managedOptions);
     final XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), new File(projectDirectory, "MyLibrary/src/xcode"), System.out, null, options);
 
@@ -114,8 +114,8 @@ public class XCodeManagerTest extends XCodeTest
     EasyMock.replay(build, mavenProject);
 
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "NON-EXISTNG_CONFIGURATION");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "iphoneos");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "NON-EXISTNG_CONFIGURATION");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "iphoneos");
     
     Options options = new Options(null, managedOptions);
     final XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
@@ -139,9 +139,9 @@ public class XCodeManagerTest extends XCodeTest
     EasyMock.replay(build, mavenProject);
 
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "iphoneos");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "iphoneos");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLibrary.xcodeproj");
     
     Options options = new Options(null, managedOptions);
     final XCodeContext context = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, new PrintStream(

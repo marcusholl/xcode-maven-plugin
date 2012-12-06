@@ -54,9 +54,9 @@ public class XCodeContextTest
     final String projectName = "MyLibrary.xcodeproj";
 
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), projectName);
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), projectName);
     Options options = new Options(null, managedOptions);
 
     HashMap<String, String> managedSettings = new HashMap<String, String>();
@@ -102,7 +102,7 @@ public class XCodeContextTest
   public void testXCodeContextWithEmptyProjectName()
   {
     HashMap<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "");
     Options options = new Options(null, managedOptions);
     try {
       new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
@@ -135,9 +135,9 @@ public class XCodeContextTest
   public void testCodeSignIdentityIsNull() throws Exception
   {
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLibrary.xcodeproj");
     Options options = new Options(null, managedOptions);
 
     final XCodeContext xCodeContext = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory,System.out, null, options);
@@ -148,9 +148,9 @@ public class XCodeContextTest
   public void testCodeSignIdentityIsEmpty() throws Exception
   {
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLibrary.xcodeproj");
     Options options = new Options(null, managedOptions);
 
     HashMap<String, String> managedSettings = new HashMap<String, String>();
@@ -167,9 +167,9 @@ public class XCodeContextTest
   public void testProvisioningProfileIsNull() throws Exception
   {
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLibrary.xcodeproj");
     Options options = new Options(null, managedOptions);
 
     final XCodeContext xCodeContext = new XCodeContext(Arrays.asList("clean", "build"), projectDirectory, System.out, null, options);
@@ -181,9 +181,9 @@ public class XCodeContextTest
   {
     Map<String, String> userOptions = new HashMap<String, String>();
     Map<String, String> managedOptions = new HashMap<String, String>();
-    managedOptions.put(Options.ManagedOption.CONFIGURATION.toLowerCase(), "Release");
-    managedOptions.put(Options.ManagedOption.SDK.toLowerCase(), "mysdk");
-    managedOptions.put(Options.ManagedOption.PROJECT.toLowerCase(), "MyLibrary.xcodeproj");
+    managedOptions.put(Options.ManagedOption.CONFIGURATION.getOptionName(), "Release");
+    managedOptions.put(Options.ManagedOption.SDK.getOptionName(), "mysdk");
+    managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), "MyLibrary.xcodeproj");
     Options options = new Options(userOptions, managedOptions);
 
     HashMap<String, String> userSettings = new HashMap<String, String>();
