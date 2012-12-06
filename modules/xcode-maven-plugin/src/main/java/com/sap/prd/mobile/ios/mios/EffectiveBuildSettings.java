@@ -60,7 +60,7 @@ class EffectiveBuildSettings
     if(_buildSettings == null) {
       _buildSettings = extractBuildSettings(context);
       buildSettings.put(context, _buildSettings);
-      debug(log, "Build settings for context: '" + context + " loaded.");
+      log.info("Build settings for context: " + context + " loaded:" + toString(_buildSettings));
     }else{
       debug(log, "Build settings for key: '" + context + " found in cache.");
     }
@@ -68,6 +68,17 @@ class EffectiveBuildSettings
     return _buildSettings;
   }
   
+  private static String toString(Properties buildSettings)
+  {
+    String ls = System.getProperty("line.separator");
+    StringBuilder sb = new StringBuilder(ls);
+    
+    for(Map.Entry<?, ?> e : buildSettings.entrySet()) {
+      sb.append(e.getKey()).append("=").append(e.getValue()).append(ls);
+    }
+    return sb.toString();
+  }
+
   private static Properties extractBuildSettings(final XCodeContext context) throws  XCodeException
   { 
     List<String> buildActions = Collections.emptyList();
