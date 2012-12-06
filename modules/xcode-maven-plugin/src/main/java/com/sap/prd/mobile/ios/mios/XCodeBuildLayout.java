@@ -21,6 +21,8 @@ package com.sap.prd.mobile.ios.mios;
 
 import java.io.File;
 
+import org.apache.maven.plugin.logging.Log;
+
 
 /**
  * Helper methods for Xcode build to retrieve certain directories
@@ -48,10 +50,9 @@ class XCodeBuildLayout
     return new File(srcDir, bundleName + ".bundle");
   }
 
-  // TODO invent better method name
-  static File getAppFolder(final File baseDirectory, final String configuration, final String sdk)
+  static File getConfigurationBuildDir(final XCodeContext context, final Log log) throws XCodeException
   {
-    return new File(getBuildDir(baseDirectory), configuration + "-" + sdk);
+    return new File(EffectiveBuildSettings.getBuildSetting(context, log, EffectiveBuildSettings.CONFIGURATION_BUILD_DIR));
   }
 
   static File getBuildDir(final File baseDirectory)

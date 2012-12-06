@@ -58,7 +58,13 @@ public class XCodePackageAppMojo extends BuildContextAwareMojo
 
     final String fixedProductName = getFixedProductName(productName);
 
-    final File rootDir = XCodeBuildLayout.getAppFolder(getXCodeCompileDirectory(), config, sdk);
+    File rootDir;
+    try {
+      rootDir = XCodeBuildLayout.getConfigurationBuildDir(getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY, config, sdk), getLog());
+    }
+    catch (XCodeException e) {
+      throw new MojoExecutionException(e.getMessage(), e);
+    }
 
     final File destination = zipSubfolder(rootDir, productName + ".app", fixedProductName + ".app.zip", null);
 

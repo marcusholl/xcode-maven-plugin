@@ -70,11 +70,15 @@ public class XCodeIpaPackageMojo extends BuildContextAwareMojo
         getLog().info(
               "Using product name '" + productName + " (fixed product name '" + fixedProductName + "')"
                     + "' for configuration '" + configuration + "' and sdk '" + sdk + "'.");
+        try {
 
-        File rootDir = XCodeBuildLayout.getAppFolder(getXCodeCompileDirectory(), configuration, sdk);
+        File rootDir = XCodeBuildLayout.getConfigurationBuildDir(getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY, configuration, sdk), getLog());
         final File ipaFile = zipSubfolder(rootDir, productName + ".app", fixedProductName + ".ipa", "Payload/");
 
         prepareIpaFileForDeployment(project, configuration, sdk, ipaFile);
+        } catch(XCodeException ex) {
+          throw new MojoExecutionException(ex.getMessage(), ex);
+        }
       }
     }
 

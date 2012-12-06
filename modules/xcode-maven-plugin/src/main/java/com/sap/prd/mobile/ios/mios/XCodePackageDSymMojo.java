@@ -94,7 +94,7 @@ public class XCodePackageDSymMojo extends BuildContextAwareMojo
 
     if (generateDSym == null || generateDSym.equalsIgnoreCase("YES")) {
 
-      final File root = new File(XCodeBuildLayout.getAppFolder(getXCodeCompileDirectory(), config, sdk), productName
+      final File root = new File(XCodeBuildLayout.getConfigurationBuildDir(getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY, config, sdk), getLog()), productName
             + ".app.dSYM");
 
       Archiver archiver = archiverManager.getArchiver("zip");

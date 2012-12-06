@@ -159,7 +159,7 @@ class XCodePackageManager
 
     String publicHeaderPath = EffectiveBuildSettings.getBuildSetting(xcodeContext, log, EffectiveBuildSettings.PUBLIC_HEADERS_FOLDER_PATH);
     
-    final File headerDir = new File(XCodeBuildLayout.getAppFolder(xcodeContext.getProjectRootDirectory(), xcodeContext.getConfiguration(), xcodeContext.getSDK()), publicHeaderPath);
+    final File headerDir = new File(XCodeBuildLayout.getConfigurationBuildDir(xcodeContext, log), publicHeaderPath);
 
     if (!headerDir.canRead())
       return;

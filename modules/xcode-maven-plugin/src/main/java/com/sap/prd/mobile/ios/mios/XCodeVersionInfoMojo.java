@@ -217,8 +217,8 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
           File versionsXmlInBuild = new File(project.getBuild().getDirectory(), "versions.xml");
           File versionsPListInBuild = new File(project.getBuild().getDirectory(), "versions.plist");
 
-          File rootDir = XCodeBuildLayout.getAppFolder(getXCodeCompileDirectory(), configuration, sdk);
-
+          File rootDir = XCodeBuildLayout.getConfigurationBuildDir(getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY, configuration, sdk), getLog());
+          
           String productName = getProductName(configuration, sdk);
           File appFolder = new File(rootDir, productName + ".app");
           File versionsXmlInApp = new File(appFolder, "versions.xml");

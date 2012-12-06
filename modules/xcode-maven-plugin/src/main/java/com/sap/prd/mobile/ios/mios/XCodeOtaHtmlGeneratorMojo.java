@@ -86,8 +86,14 @@ public class XCodeOtaHtmlGeneratorMojo extends BuildContextAwareMojo
               "Using product name '" + productName + " (fixed product name '" + fixedProductName + "')"
                     + "' for configuration '" + configuration + "' and sdk '" + sdk + "'.");
 
-        final File otaHtmlFile = new File(XCodeBuildLayout.getAppFolder(getXCodeCompileDirectory(), configuration,
-              sdk), fixedProductName + ".htm");
+        File otaHtmlFile;
+        try {
+          otaHtmlFile = new File(XCodeBuildLayout.getConfigurationBuildDir(getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY, configuration, sdk), getLog()), fixedProductName + ".htm");
+        }
+        catch (XCodeException ex) {
+         
+          throw new MojoExecutionException(ex.getMessage(), ex);
+        }
 
         final String otaClassifier = getOtaHtmlClassifier(configuration, sdk);
         final String ipaClassifier = getIpaClassifier(configuration, sdk);
