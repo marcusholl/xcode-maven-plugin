@@ -26,7 +26,8 @@ import java.util.Map;
 final class Options {
 
   enum ManagedOption {
-    PROJECT(true,false), CONFIGURATION(true, false), SDK(false, false), TARGET(false, false), SHOWBUILDSETTINGS("showBuildSettings", false, true);
+    PROJECT(true,false), CONFIGURATION(true, false), SDK(false, false), TARGET(false, false), SHOWBUILDSETTINGS("showBuildSettings", false, true),
+    DRY_RUN("dry-run",false, true), SHOWSDKS(false, true), VERSION(false, true), LIST(false, true), USAGE(false, true), HELP(false, true), LICENSE(false, true);
 
     static ManagedOption forName(String name) {
       for (ManagedOption value : values()) {

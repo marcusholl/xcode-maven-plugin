@@ -39,7 +39,7 @@
                       <TEST>abc</TEST>
                     </settings>
                     <options>
-                      <dry-run />
+                      <verbose />
                     </options>
                   </configuration>
               </plugin>
