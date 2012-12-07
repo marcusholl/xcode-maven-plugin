@@ -38,10 +38,9 @@ class XCodeBuildLayout
   // are relevant for distiguishing build artifacts.
   //
 
-  static File getBinary(final File buildDir, final String configuration, final String sdk, final String projectName)
+  static File getBinary(XCodeContext context, Log log) throws XCodeException
   {
-
-    return new File(buildDir, configuration + "-" + sdk + "/lib" + projectName + ".a");
+    return new File(getConfigurationBuildDir(context, log), "lib" + getEffectiveBuildSetting(context, log, EffectiveBuildSettings.PROJECT_NAME) + ".a");
   }
 
   static File getBundleDirectory(final File srcDir, final String bundleName)

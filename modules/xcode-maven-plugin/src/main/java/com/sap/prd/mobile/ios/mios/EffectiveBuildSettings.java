@@ -36,6 +36,7 @@ import org.apache.maven.plugin.logging.Log;
 class EffectiveBuildSettings
 {
   static final String PRODUCT_NAME = "PRODUCT_NAME";
+  static final String PROJECT_NAME = "PROJECT_NAME";
   static final String SRC_ROOT = "SRCROOT";
   static final String GCC_GENERATE_DEBUGGING_SYMBOLS = "GCC_GENERATE_DEBUGGING_SYMBOLS";
   static final String CODE_SIGN_IDENTITY = "CODE_SIGN_IDENTITY";

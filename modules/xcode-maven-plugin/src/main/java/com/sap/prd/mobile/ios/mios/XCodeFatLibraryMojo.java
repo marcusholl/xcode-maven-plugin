@@ -71,17 +71,13 @@ public class XCodeFatLibraryMojo extends BuildContextAwareMojo
 
     for (String sdk : getSDKs()) {
 
-      File symroot;
 
       try {
-        symroot = XCodeBuildLayout.getSymRootDirectory(getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY,  configuration, sdk), getLog());
+      lipoCommand.add(XCodeBuildLayout.getBinary(getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY, configuration, sdk), getLog()).getAbsolutePath());
       }
       catch (XCodeException e) {
         throw new MojoExecutionException(e.getMessage(), e);
       }
-
-      lipoCommand.add(XCodeBuildLayout.getBinary(symroot,
-            configuration, sdk, project.getArtifactId()).getAbsolutePath());
     }
     final File fatBinaryDestDirectory = new File(new File(project.getBuild().getDirectory()), configuration);
     fatBinaryDestDirectory.mkdirs();
