@@ -54,7 +54,7 @@ class XCodeBuildLayout
     return new File(getEffectiveBuildSetting(context, log, EffectiveBuildSettings.CONFIGURATION_BUILD_DIR));
   }
 
-  static File getBuildDir(final XCodeContext context, final Log log) throws XCodeException
+  static File getSymRootDirectory(final XCodeContext context, final Log log) throws XCodeException
   {
     return new File(getEffectiveBuildSetting(context, log, EffectiveBuildSettings.SYMROOT));
   }

@@ -74,7 +74,7 @@ public class XCodeFatLibraryMojo extends BuildContextAwareMojo
       File symroot;
 
       try {
-        symroot = XCodeBuildLayout.getBuildDir(getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY,  configuration, sdk), getLog());
+        symroot = XCodeBuildLayout.getSymRootDirectory(getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY,  configuration, sdk), getLog());
       }
       catch (XCodeException e) {
         throw new MojoExecutionException(e.getMessage(), e);
