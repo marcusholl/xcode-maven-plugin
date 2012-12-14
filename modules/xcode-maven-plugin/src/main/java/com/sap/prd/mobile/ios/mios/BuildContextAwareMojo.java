@@ -83,7 +83,7 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
     if(sourceCodeLocation == XCodeContext.SourceCodeLocation.WORKING_COPY) {
       projectDirectory = getXCodeCompileDirectory();
     } else if(sourceCodeLocation == XCodeContext.SourceCodeLocation.ORIGINAL) {
-      projectDirectory = getXCodeSourceDirectory();
+      projectDirectory = new File(project.getBuild().getSourceDirectory());
     } else {
       throw new IllegalStateException("Invalid source code location: '" + sourceCodeLocation + "'");
     }

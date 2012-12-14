@@ -137,7 +137,7 @@ public class UpdateVersionInPomMojo extends BuildContextAwareMojo
         if(infoPListFileName == null || infoPListFileName.isEmpty())
           throw new XCodeException("Cannot retrieve info plist file from Build settings.");
         
-        final File sourceDir = getXCodeSourceDirectory();
+        final File sourceDir = new File(project.getBasedir(), getXCodeSourceDirectory());
         getLog().info("Xcode source directory is: '" + sourceDir + "'.");
         
         File infoPList = new File(sourceDir, infoPListFileName);
