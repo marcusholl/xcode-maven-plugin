@@ -72,9 +72,9 @@ public class FileUtilsTest
     File source = prepareFile();
     File target = tmpFolder.newFile("target");
 
-    FileUtils.createSymbolicLink(source.getParentFile(), source, target);
+    FileUtils.createSymbolicLink(source.getParentFile(), source, target.getName());
 
-    Assert.assertTrue(checkForSymbolicLink(target));   
+    Assert.assertTrue(checkForSymbolicLink(target));
   }
   
   @Test
@@ -88,7 +88,7 @@ public class FileUtilsTest
   {
     File source = prepareFile();
     File target = tmpFolder.newFile("target");
-    FileUtils.createSymbolicLink(source.getParentFile(), source, target);
+    FileUtils.createSymbolicLink(source.getParentFile(), source, target.getName());
     assertTrue(FileUtils.isSymbolicLink(target));
   }
 
