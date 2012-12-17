@@ -75,6 +75,7 @@ public class StraightForwardLibAndAppTest extends XCodeTest
     additionalSystemProperties.put("xcode.app.defaultConfigurations", "Release");
     additionalSystemProperties.put("xcode.app.defaultSdks", "iphoneos");
     additionalSystemProperties.put("archive.dir", "archive");
+    additionalSystemProperties.put("xcode.useSymbolicLinks", Boolean.TRUE.toString());
 
     
     test(testName, new File(getTestRootDirectory(), "straight-forward/MyLibrary"), "deploy",
