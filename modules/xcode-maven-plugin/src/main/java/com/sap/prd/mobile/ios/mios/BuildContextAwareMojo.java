@@ -23,8 +23,11 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -130,10 +133,15 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
     if (provisioningProfile != null)
       managedSettings.put(Settings.ManagedSetting.PROVISIONING_PROFILE.name(), provisioningProfile);
 
-    final String otherCodesignFlags = getProperty("xcode.settings.OTHER_CODE_SIGN_FLAGS");
-    
-    if(otherCodesignFlags != null && !otherCodesignFlags.trim().isEmpty())
-      managedSettings.put(Settings.ManagedSetting.OTHER_CODE_SIGN_FLAGS.name(), otherCodesignFlags);
+    final Set<String> keys = getKeys("xcode.settings.managed.");
+
+    for(final String key : keys) {
+
+      final String value = getProperty(key);
+
+      if(value != null && !value.trim().isEmpty())
+        managedSettings.put(key.substring("xcode.settings.managed.".length()), value);
+    }
 
     HashMap<String, String> managedOptions = new HashMap<String, String>();
 
@@ -150,6 +158,24 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
           new Options(options, managedOptions));
   }
 
+  @SuppressWarnings("unchecked")
+  Set<String> getKeys(String prefix) {
+    
+    Set<String> result = new HashSet<String>();
+    
+    @SuppressWarnings("rawtypes")
+    final Set keys = new HashSet();
+    keys.addAll(session.getUserProperties().keySet());
+    keys.addAll(project.getProperties().keySet());
+    
+    for(Object key : keys) {
+      if(((String)key).startsWith(prefix))
+        result.add((String)key);
+    }
+
+    return result;
+  }
+  
   private String getProperty(String key)
   {
     String value = session.getUserProperties().getProperty(key);
