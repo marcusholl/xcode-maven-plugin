@@ -28,7 +28,11 @@ final class Settings {
 
   private final static String XCODE_OUTPUT_DIRECTORY = "build";
   
-  enum ManagedSetting {CODE_SIGN_IDENTITY(false, null), PROVISIONING_PROFILE(false, null), DSTROOT(true, XCODE_OUTPUT_DIRECTORY), SYMROOT(true, XCODE_OUTPUT_DIRECTORY), SHARED_PRECOMPS_DIR(true, XCODE_OUTPUT_DIRECTORY), OBJROOT(true, XCODE_OUTPUT_DIRECTORY);
+  enum ManagedSetting
+  {
+    CODE_SIGN_IDENTITY(false, null), PROVISIONING_PROFILE(false, null), DSTROOT(true, XCODE_OUTPUT_DIRECTORY), SYMROOT(
+          true, XCODE_OUTPUT_DIRECTORY), SHARED_PRECOMPS_DIR(true, XCODE_OUTPUT_DIRECTORY), OBJROOT(true,
+          XCODE_OUTPUT_DIRECTORY), OTHER_CODE_SIGN_FLAGS(false, null);
 
     private final boolean required;
     private String defaultValue;

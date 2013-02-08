@@ -66,6 +66,12 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
   protected String provisioningProfile;
 
   /**
+   * @parameter expression="${xcode.settings.OTHER_CODE_SIGN_FLAGS}"
+   */
+
+  private String otherCodesignFlags;
+  
+  /**
    * The Xcode target to be built. If not specified, the default target (the first target) will be
    * built.
    * 
@@ -96,7 +102,7 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
    * @since 1.6.2
    */
   private Map<String, String> options;
-
+  
   protected XCodeContext getXCodeContext(final XCodeContext.SourceCodeLocation sourceCodeLocation,
         String configuration, String sdk)
   {
@@ -120,6 +126,9 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
     if (provisioningProfile != null)
       managedSettings.put(Settings.ManagedSetting.PROVISIONING_PROFILE.name(), provisioningProfile);
 
+    if(otherCodesignFlags != null && !otherCodesignFlags.trim().isEmpty())
+      managedSettings.put(Settings.ManagedSetting.OTHER_CODE_SIGN_FLAGS.name(), otherCodesignFlags);
+    
     HashMap<String, String> managedOptions = new HashMap<String, String>();
 
     managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), projectName + ".xcodeproj");
