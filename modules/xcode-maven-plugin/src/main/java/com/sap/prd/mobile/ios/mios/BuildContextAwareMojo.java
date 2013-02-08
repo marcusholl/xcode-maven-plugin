@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.MojoExecutionException;
 
 /**
@@ -65,11 +66,6 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
    */
   protected String provisioningProfile;
 
-  /**
-   * @parameter expression="${xcode.settings.OTHER_CODE_SIGN_FLAGS}"
-   */
-
-  private String otherCodesignFlags;
   
   /**
    * The Xcode target to be built. If not specified, the default target (the first target) will be
@@ -103,6 +99,14 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
    */
   private Map<String, String> options;
   
+  
+  /**
+   * @parameter  expression="${session}"
+   * @required
+   * @readonly
+   */
+  private MavenSession session;
+  
   protected XCodeContext getXCodeContext(final XCodeContext.SourceCodeLocation sourceCodeLocation,
         String configuration, String sdk)
   {
@@ -126,9 +130,11 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
     if (provisioningProfile != null)
       managedSettings.put(Settings.ManagedSetting.PROVISIONING_PROFILE.name(), provisioningProfile);
 
+    final String otherCodesignFlags = getProperty("xcode.settings.OTHER_CODE_SIGN_FLAGS");
+    
     if(otherCodesignFlags != null && !otherCodesignFlags.trim().isEmpty())
       managedSettings.put(Settings.ManagedSetting.OTHER_CODE_SIGN_FLAGS.name(), otherCodesignFlags);
-    
+
     HashMap<String, String> managedOptions = new HashMap<String, String>();
 
     managedOptions.put(Options.ManagedOption.PROJECT.getOptionName(), projectName + ".xcodeproj");
@@ -142,6 +148,18 @@ public abstract class BuildContextAwareMojo extends AbstractXCodeMojo
 
     return new XCodeContext(getBuildActions(), projectDirectory, System.out, new Settings(settings, managedSettings),
           new Options(options, managedOptions));
+  }
+
+  private String getProperty(String key)
+  {
+    String value = session.getUserProperties().getProperty(key);
+
+    if(value == null)
+    {
+      value = project.getProperties().getProperty(key);
+    }
+
+    return value;
   }
 
   protected List<String> getBuildActions()
