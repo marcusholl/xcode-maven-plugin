@@ -55,3 +55,14 @@ How to build the Cordova HelloWorld ExampleProject
 
    * Builds the HelloWorld project with maven.
 
+   []
+
+   After calling the script the
+   
+   * CordovaLib project is located inside <<<./projects/CordovaLib>>>
+
+   * HelloWorld project is located inside <<<./projects/HelloWorld>>>
+
+   []
+
+   As always: the best documentation is the source code. Please review the shell scripts and the pom files that can be found inside the mavenized projects.
