@@ -22,6 +22,7 @@ package com.sap.prd.mobile.ios.mios;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -118,13 +119,29 @@ public class XCodePackageFrameworkMojo extends BuildContextAwareMojo
   private void validateFrmkStructure(File fmwkDir) throws MojoExecutionException
   {
     FrameworkStructureValidator fmwkValidator = new FrameworkStructureValidator(fmwkDir);
+
     List<String> validationErrors = fmwkValidator.validate();
     if (!validationErrors.isEmpty()) {
       throw new MojoExecutionException("The validation of the built framework '" + fmwkDir.getAbsolutePath()
             + "' failed: " + validationErrors);
     }
-  }
 
+    try {
+      List<String> validationWarnings = fmwkValidator.validateFrwkBinary();
+      getLog().info("Validating if the framework binary contains simulator architecture");
+      if (!validationWarnings.isEmpty()) {
+        getLog().warn(
+              "The built framework binary '" + fmwkDir.getAbsolutePath()
+              + "' finished with the following warnings: " + validationWarnings);
+      }
+      else {
+        getLog().info("The built framework binary '" + fmwkDir.getAbsolutePath() + "' contains simulator architecture");
+      }
+    }
+    catch (Exception e) {
+      throw new MojoExecutionException("Could not validate the Xcode framework.", e);
+    }
+  }
 
   protected String getPrimaryFmwkConfiguration() throws MojoExecutionException
   {

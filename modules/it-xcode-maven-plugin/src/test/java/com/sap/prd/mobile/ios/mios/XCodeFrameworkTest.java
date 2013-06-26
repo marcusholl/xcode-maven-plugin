@@ -161,7 +161,7 @@ public class XCodeFrameworkTest extends XCodeTest
     assertTrue(xcodeprojAppZip.exists());
     assertUnpackAndCompile(xcodeprojAppZip);
   }
-
+  
   @Test
   public void testUseFrameworkConfigurationSpecific() throws Exception
   {
@@ -199,6 +199,7 @@ public class XCodeFrameworkTest extends XCodeTest
     assertTrue(xcodeprojAppZip.exists());
     assertUnpackAndCompile(xcodeprojAppZip);
   }
+  
   @Test
   public void testFrameworkInProjectZip() throws Exception
   {
@@ -352,5 +353,74 @@ public class XCodeFrameworkTest extends XCodeTest
           "target/xcode-deps/frameworks/Release/com.sap.ondevice.production.ios.tests/MyFramework/MyFramework.framework/Resources");
     assertTrue("Resources folder in framework '" + resourcesInFramework
           + "' is not a symbolic link, but should be a symbolic link.", FileUtils.isSymbolicLink(resourcesInFramework));
+  }
+  
+  @Test
+  public void createAndValidateExistingSimulatorFmwk() throws IOException, Exception
+  {
+    String dynamicVersion = "1.0." + System.currentTimeMillis();
+    final String testName = Thread.currentThread().getStackTrace()[1].getMethodName();
+    
+    final File remoteRepositoryDirectory = getRemoteRepositoryDirectory(getClass().getName());
+    prepareRemoteRepository(remoteRepositoryDirectory);
+    Properties pomReplacements = new Properties();
+    pomReplacements.setProperty(PROP_NAME_DEPLOY_REPO_DIR, remoteRepositoryDirectory.getAbsolutePath());
+    pomReplacements.setProperty(PROP_NAME_DYNAMIC_VERSION, dynamicVersion);
+    String fmwkName = "MyFakeFramework";
+    test(testName, new File(getTestRootDirectory(), "framework/" + fmwkName), "deploy",
+          THE_EMPTY_LIST, THE_EMPTY_MAP, pomReplacements, new NullProjectModifier());
+
+  
+    final String frameworkArtifactFilePrefix = Constants.GROUP_ID_WITH_SLASH + "/" + fmwkName + "/" + dynamicVersion
+          + "/" + fmwkName
+          + "-" + dynamicVersion;
+    
+    File extractedFrameworkFolder = tmpFolder.newFolder("frmw" + fmwkName);
+   
+    for(String configuration : Arrays.asList("Debug", "Release")) 
+    {
+      File repoArtifact = new File(remoteRepositoryDirectory, frameworkArtifactFilePrefix + "-" + configuration + "." + Types.FRAMEWORK);
+      extractedFrameworkFolder = tmpFolder.newFolder("frmw" + fmwkName + "-" + configuration);
+      extractFileWithShellScript(repoArtifact, extractedFrameworkFolder);
+      FrameworkStructureValidator fmwkValidator = new FrameworkStructureValidator(new File(extractedFrameworkFolder, fmwkName + ".framework"));
+      List<String> warnMsgs = fmwkValidator.validateFrwkBinary();
+      assertTrue("The framework does not contain i386 architecture." + warnMsgs, warnMsgs.isEmpty());
+    }   
+  }
+  
+  @Test
+  public void createAndValidateMissingSimulatorFmwk() throws IOException, Exception
+  {
+    String dynamicVersion = "1.0." + System.currentTimeMillis();
+    final String testName = Thread.currentThread().getStackTrace()[1].getMethodName();
+
+    final File remoteRepositoryDirectory = getRemoteRepositoryDirectory(getClass().getName());
+    prepareRemoteRepository(remoteRepositoryDirectory);
+    Properties pomReplacements = new Properties();
+    pomReplacements.setProperty(PROP_NAME_DEPLOY_REPO_DIR, remoteRepositoryDirectory.getAbsolutePath());
+    pomReplacements.setProperty(PROP_NAME_DYNAMIC_VERSION, dynamicVersion);
+    String fmwkName = "TestFramework";
+
+    test(testName, new File(getTestRootDirectory(), "framework/" + fmwkName), "deploy",
+          THE_EMPTY_LIST, THE_EMPTY_MAP, pomReplacements, new NullProjectModifier());
+
+    final String frameworkArtifactFilePrefix = Constants.GROUP_ID_WITH_SLASH + "/" + fmwkName + "/" + dynamicVersion
+          + "/" + fmwkName
+          + "-" + dynamicVersion;
+
+    File extractedFrameworkFolder = tmpFolder.newFolder("frmw" + fmwkName);
+
+    for (String configuration : Arrays.asList("Debug", "Release"))
+    {
+      File repoArtifact = new File(remoteRepositoryDirectory, frameworkArtifactFilePrefix + "-" + configuration + "."
+            + Types.FRAMEWORK);
+      extractedFrameworkFolder = tmpFolder.newFolder("frmw" + fmwkName + "-" + configuration);
+      extractFileWithShellScript(repoArtifact, extractedFrameworkFolder);
+      FrameworkStructureValidator fmwkValidator = new FrameworkStructureValidator(new File(extractedFrameworkFolder,
+            fmwkName + ".framework"));
+      List<String> warnMsgs = fmwkValidator.validateFrwkBinary();
+      assertTrue("The framework built for configuration ' " + configuration + " 'contains i386 architecture."
+            + warnMsgs, !warnMsgs.isEmpty());
+    }
   }
 }

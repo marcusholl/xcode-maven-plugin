@@ -38,6 +38,7 @@ public class FrameworkStructureValidator
 {
 
   private final File fmwkDir;
+  private List<String> warnMsgs;
   private List<String> errorMsgs;
 
   public FrameworkStructureValidator(File fmwkDir)
@@ -66,6 +67,24 @@ public class FrameworkStructureValidator
       validateLink("Versions/Current", "Versions/A");
     }
     return errorMsgs;
+  }
+  
+  /**
+   * 
+   * @return a non <code>null</code> list containing the validation warnings. The list is empty if
+   *         the framework binary contains i386 architecture.
+   * @throws IOException 
+   */
+  public List<String> validateFrwkBinary() throws IOException
+  {
+    warnMsgs = new ArrayList<String>();
+    String fmwkName = FilenameUtils.removeExtension(fmwkDir.getName());
+    FatLibAnalyzer fatLibAnalyzer = new FatLibAnalyzer(new File(fmwkDir, "Versions/A/" + fmwkName));
+
+    if (!fatLibAnalyzer.containsI386()) {
+      warnMsgs.add("'" + fmwkDir.getAbsolutePath() + "' does not contain i386 architecture.");
+    }
+    return warnMsgs;
   }
 
   private void validateSubdirExistence(String... subDirNames)
