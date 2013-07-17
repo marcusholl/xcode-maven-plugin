@@ -228,6 +228,40 @@ public class XCodeVerificationCheckMojoTest
     testValidateLocation(" file://localhost/a/b/c.xml  ", "FILE", "/a/b/c.xml");
   }
 
+  @Test
+  public void testValidateLocationSpacesInsidePath() throws InvalidProtocolException, MalformedURLException
+  {
+    testValidateLocation(" file://localhost/a/b b/c.xml  ", "FILE", "/a/b b/c.xml");
+  }
+
+  @Test
+  public void testValidateLocationHttp() throws InvalidProtocolException, MalformedURLException
+  {
+    testValidateLocation("http://localhost/a/b/c.xml", "HTTP", "localhost/a/b/c.xml");
+    testValidateLocation("https://localhost/a/b/c.xml", "HTTPS", "localhost/a/b/c.xml");
+  }
+
+  @Test
+  public void testValidateLocationHttpWithPort() throws InvalidProtocolException, MalformedURLException
+  {
+    testValidateLocation("http://localhost:8080/a/b/c.xml", "HTTP", "localhost:8080/a/b/c.xml");
+    testValidateLocation("https://localhost:8080/a/b/c.xml", "HTTPS", "localhost:8080/a/b/c.xml");
+  }
+
+  @Test
+  public void testValidateLocationHttpWithParameters() throws InvalidProtocolException, MalformedURLException
+  {
+    testValidateLocation("http://localhost:8080/a/b/c.xml?x=y", "HTTP", "localhost:8080/a/b/c.xml?x=y");
+    testValidateLocation("https://localhost:8080/a/b/c.xml?x=y", "HTTPS", "localhost:8080/a/b/c.xml?x=y");
+  }
+  
+  @Test
+  public void testValidateLocationHttpWithAnchor() throws InvalidProtocolException, MalformedURLException
+  {
+    testValidateLocation("http://localhost:8080/a/b/c.xml#anchor", "HTTP", "localhost:8080/a/b/c.xml#anchor");
+    testValidateLocation("https://localhost:8080/a/b/c.xml#anchor", "HTTPS", "localhost:8080/a/b/c.xml#anchor");
+  }
+  
   @Test(expected=MalformedURLException.class)
   public void testValidateLocationUnknownProtocol() throws InvalidProtocolException, MalformedURLException
   {
