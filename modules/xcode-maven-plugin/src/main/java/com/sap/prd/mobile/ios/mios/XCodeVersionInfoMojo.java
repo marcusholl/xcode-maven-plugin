@@ -261,14 +261,36 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
                                   "<xsl:copy>" +
                                     "<xsl:choose>" +
                                       "<xsl:when test=\"name()='connection'\">" +
-                                         "geheim" + 
+                                      "<xsl:call-template name=\"tokenize\">" +
+                                        "<xsl:with-param name=\"text\" select=\"substring-after(., ':')\"/>" +
+                                      "</xsl:call-template>" +
                                       "</xsl:when>" +
                                       "<xsl:otherwise>" +
                                         "<xsl:apply-templates select=\"@*|node()\"/>" +
                                       "</xsl:otherwise>" +
                                     "</xsl:choose>" + 
                                   "</xsl:copy>" +
-                                "</xsl:template>" +
+                                "</xsl:template>" + 
+                                  "<xsl:template name=\"tokenize\">" +
+                                  "<xsl:param name=\"text\" select=\".\"/>" +
+                                  "<xsl:param name=\"separator\" select=\"':'\"/>" +
+                                    "<xsl:choose>" +
+                                      "<xsl:when test=\"not(contains($text, $separator))\">" +
+                                        "<item>" +
+                                            "<xsl:value-of select=\"normalize-space($text)\"/>" +
+                                        "</item>" +
+                                    "</xsl:when>" +
+                                    "<xsl:otherwise>" +
+                                        "<item>" +
+                                            "<xsl:value-of select=\"normalize-space(substring-before($text, $separator))\"/>" +
+                                        "</item>" +
+                                         "<xsl:call-template name=\"tokenize\">" + 
+                                            "<xsl:with-param name=\"text\" select=\"substring-after($text, $separator)\"/>" +
+                                        "</xsl:call-template>" +
+                                    "</xsl:otherwise>" +
+                                "</xsl:choose>" +
+
+                                  "</xsl:template>" +
                               "</xsl:stylesheet>";
     
     InputStream transformation = new ByteArrayInputStream(transformerRules.getBytes());
