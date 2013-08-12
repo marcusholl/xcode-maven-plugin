@@ -19,14 +19,24 @@
  */
 package com.sap.prd.mobile.ios.mios;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -222,7 +232,11 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
             .getCodesignEntitlementsInformation(appFolder);
           final ExecResult originalSecurityCMSMessageInfo = CodeSignManager.getSecurityCMSInformation(appFolder);
 
-          FileUtils.copyFile(versionsXmlInBuild, versionsXmlInApp);
+          try {
+          transformVersionsXml(versionsXmlInBuild, versionsXmlInApp);
+          } catch(Exception e) {
+            e.printStackTrace();
+          }
           getLog().info("Versions.xml file copied from: '" + versionsXmlInBuild + " ' to ' " + versionsXmlInApp);
           FileUtils.copyFile(versionsPListInBuild, versionsPListInApp);
           getLog().info("Versions.plist file copied from: '" + versionsPListInBuild + " ' to ' " + versionsPListInApp);
@@ -240,6 +254,30 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
     }
   }
 
+  private void transformVersionsXml(File versionsXmlInBuild, File versionsXmlInApp) throws ParserConfigurationException, SAXException, IOException, TransformerFactoryConfigurationError, TransformerException
+  {
+    String transformerRules = "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">" +
+          "<xsl:template match=\"@*|node()\">" +
+                                  "<xsl:copy>" +
+                                    "<xsl:choose>" +
+                                      "<xsl:when test=\"name()='connection'\">" +
+                                         "geheim" + 
+                                      "</xsl:when>" +
+                                      "<xsl:otherwise>" +
+                                        "<xsl:apply-templates select=\"@*|node()\"/>" +
+                                      "</xsl:otherwise>" +
+                                    "</xsl:choose>" + 
+                                  "</xsl:copy>" +
+                                "</xsl:template>" +
+                              "</xsl:stylesheet>";
+    
+    InputStream transformation = new ByteArrayInputStream(transformerRules.getBytes());
+    Source _tranformation = new StreamSource(transformation);
+    Transformer transformer = TransformerFactory.newInstance().newTransformer(_tranformation);
+    transformer.transform(new StreamSource(versionsXmlInBuild), new StreamResult(versionsXmlInApp));
+    transformer.transform(new StreamSource(versionsXmlInBuild), new StreamResult(new File("/Users/d025390/versions.xml")));
+  }
+  
   private void sign(File rootDir, String configuration, String sdk) throws IOException, XCodeException
   {
     String csi = EffectiveBuildSettings.getBuildSetting(
