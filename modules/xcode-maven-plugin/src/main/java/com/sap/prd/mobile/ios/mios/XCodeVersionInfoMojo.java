@@ -129,6 +129,13 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
    */
   private boolean failOnMissingSyncInfo;
 
+  /**
+   * If <code>true</code> confidential information is removed from artifacts to be released.
+   * 
+   * @parameter expression="${xcode.hideConfidentialInformation}" default-value="true"
+   */
+  private boolean hideConfidentialInformation;
+
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException
   {
@@ -174,32 +181,33 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
     }
     try {
       new VersionInfoPListManager().createVersionInfoPlistFile(project.getGroupId(), project.getArtifactId(),
-            project.getVersion(), syncInfoFile, getDependencies(), versionsPlistFile);
+            project.getVersion(), syncInfoFile, getDependencies(), versionsPlistFile, hideConfidentialInformation);
     }
     catch (IOException e) {
       throw new MojoExecutionException(e.getMessage(), e);
     }
 
     try {
-    if (PackagingType.getByMavenType(packaging) == PackagingType.APP)
-    {
-      try
+      if (PackagingType.getByMavenType(packaging) == PackagingType.APP)
       {
-        copyVersionsFilesAndSign();
-      }
-      catch (IOException e) {
-        throw new MojoExecutionException(e.getMessage(), e);
-      }
-      catch (ExecutionResultVerificationException e) {
-        throw new MojoExecutionException(e.getMessage(), e);
-      }
-      catch (XCodeException e) {
-        throw new MojoExecutionException(e.getMessage(), e);
+        try
+        {
+          copyVersionsFilesAndSign();
+        }
+        catch (IOException e) {
+          throw new MojoExecutionException(e.getMessage(), e);
+        }
+        catch (ExecutionResultVerificationException e) {
+          throw new MojoExecutionException(e.getMessage(), e);
+        }
+        catch (XCodeException e) {
+          throw new MojoExecutionException(e.getMessage(), e);
+        }
       }
     }
-    } catch(PackagingType.UnknownPackagingTypeException ex) {
+    catch (PackagingType.UnknownPackagingTypeException ex) {
       getLog().warn("Unknown packaing type detected.", ex);
-     
+
     }
 
     projectHelper.attachArtifact(project, "xml", "versions", versionsXmlFile);
@@ -232,8 +240,14 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
           final ExecResult originalSecurityCMSMessageInfo = CodeSignManager.getSecurityCMSInformation(appFolder);
 
           try {
-            transformVersionsXml(versionsXmlInBuild, versionsXmlInApp);
-          } catch(Exception e) {
+            if (hideConfidentialInformation) {
+              transformVersionsXml(versionsXmlInBuild, versionsXmlInApp);
+            }
+            else {
+              FileUtils.copyFile(versionsXmlInBuild, versionsXmlInApp);
+            }
+          }
+          catch (Exception e) {
             throw new MojoExecutionException("Could not transform versions.xml: " + e.getMessage(), e);
           }
 
@@ -254,11 +268,12 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
     }
   }
 
-  private void transformVersionsXml(File versionsXmlInBuild, File versionsXmlInApp)
+  void transformVersionsXml(File versionsXmlInBuild, File versionsXmlInApp)
         throws ParserConfigurationException, SAXException, IOException, TransformerFactoryConfigurationError,
         TransformerException, XCodeException
   {
-    final InputStream transformerRule = getClass().getClassLoader().getResourceAsStream("transformation.xml");
+    final InputStream transformerRule = getClass().getClassLoader().getResourceAsStream(
+          "versionInfoCensorTransformation.xml");
 
     if (transformerRule == null)
     {
@@ -278,13 +293,15 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
       IOUtils.closeQuietly(transformerRule);
     }
   }
-  
+
   private void sign(File rootDir, String configuration, String sdk) throws IOException, XCodeException
   {
     String csi = EffectiveBuildSettings.getBuildSetting(
-          getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY, configuration, sdk), EffectiveBuildSettings.CODE_SIGN_IDENTITY);
+          getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY, configuration, sdk),
+          EffectiveBuildSettings.CODE_SIGN_IDENTITY);
     File appFolder = new File(EffectiveBuildSettings.getBuildSetting(
-          getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY, configuration, sdk), EffectiveBuildSettings.CODESIGNING_FOLDER_PATH));
+          getXCodeContext(XCodeContext.SourceCodeLocation.WORKING_COPY, configuration, sdk),
+          EffectiveBuildSettings.CODESIGNING_FOLDER_PATH));
     CodeSignManager.sign(csi, appFolder, true);
   }
 
@@ -310,10 +327,16 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
         result.add(VersionInfoXmlManager.parseDependency(sideArtifact.getFile()));
       }
       catch (SAXException e) {
-        getLog().warn(String.format("Version file '%s' for artifact '%s' contains invalid content (Non parsable XML). Ignoring this file.", (sideArtifact != null ? sideArtifact.getFile() : "<n/a>"), sideArtifact));
+        getLog()
+          .warn(String.format(
+                "Version file '%s' for artifact '%s' contains invalid content (Non parsable XML). Ignoring this file.",
+                (sideArtifact != null ? sideArtifact.getFile() : "<n/a>"), sideArtifact));
       }
       catch (JAXBException e) {
-        getLog().info(String.format("Version file '%s' for artifact '%s' contains invalid content (Scheme violation). Ignoring this file.", (sideArtifact != null ? sideArtifact.getFile() : "<n/a>"), sideArtifact));
+        getLog()
+          .info(String.format(
+                "Version file '%s' for artifact '%s' contains invalid content (Scheme violation). Ignoring this file.",
+                (sideArtifact != null ? sideArtifact.getFile() : "<n/a>"), sideArtifact));
       }
       catch (SideArtifactNotFoundException e) {
         getLog().warn("Could not retrieve version information for artifact:" + mainArtifact);
