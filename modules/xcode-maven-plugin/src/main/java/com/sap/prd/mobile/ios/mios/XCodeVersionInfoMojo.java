@@ -22,6 +22,7 @@ package com.sap.prd.mobile.ios.mios;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -233,8 +234,7 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
           try {
             transformVersionsXml(versionsXmlInBuild, versionsXmlInApp);
           } catch(Exception e) {
-            // TODO improve
-            throw new MojoExecutionException("Could not transform versions.xml", e);
+            throw new MojoExecutionException("Could not transform versions.xml: " + e.getMessage(), e);
           }
 
           getLog().info("Versions.xml file copied from: '" + versionsXmlInBuild + " ' to ' " + versionsXmlInApp);
@@ -254,14 +254,29 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
     }
   }
 
-  private void transformVersionsXml(File versionsXmlInBuild, File versionsXmlInApp) throws ParserConfigurationException, SAXException, IOException, TransformerFactoryConfigurationError, TransformerException
+  private void transformVersionsXml(File versionsXmlInBuild, File versionsXmlInApp)
+        throws ParserConfigurationException, SAXException, IOException, TransformerFactoryConfigurationError,
+        TransformerException, XCodeException
   {
+    final InputStream transformerRule = getClass().getClassLoader().getResourceAsStream("transformation.xml");
 
-      Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(getClass().getClassLoader().getResourceAsStream("transformation.xml")));
+    if (transformerRule == null)
+    {
+      throw new XCodeException("Could not read transformer rule.");
+    }
+
+    try
+    {
+      final Transformer transformer = TransformerFactory.newInstance().newTransformer(
+            new StreamSource(transformerRule));
       transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
       transformer.setOutputProperty(OutputKeys.INDENT, "yes");
       transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
       transformer.transform(new StreamSource(versionsXmlInBuild), new StreamResult(versionsXmlInApp));
+    }
+    finally {
+      IOUtils.closeQuietly(transformerRule);
+    }
   }
   
   private void sign(File rootDir, String configuration, String sdk) throws IOException, XCodeException
