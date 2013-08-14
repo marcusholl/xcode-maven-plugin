@@ -82,7 +82,7 @@ public class VersionInfoPListManagerTest
     coord.setVersion("depVersion");
 
     SCM scm = new SCM();
-    scm.setConnection("scm:perforce:DEP_PERFORCE_PORT://DEP_DEPOT_PATH/");
+    scm.setConnection("scm:perforce:DEP_PERFORCE_HOST:PORT://DEP_DEPOT_PATH/");
     scm.setRevision("depRevision");
 
     dep.setCoordinates(coord);
@@ -96,7 +96,7 @@ public class VersionInfoPListManagerTest
     Assert.assertEquals("depGroupId", plistAccessor.printValue("dependencies:0:coordinates:groupId"));
     Assert.assertEquals("depVersion", plistAccessor.printValue("dependencies:0:coordinates:version"));
 
-    Assert.assertEquals("scm:perforce:DEP_PERFORCE_PORT://DEP_DEPOT_PATH/",
+    Assert.assertEquals("PORT",
           plistAccessor.printValue("dependencies:0:scm:connection"));
     Assert.assertEquals("depRevision", plistAccessor.printValue("dependencies:0:scm:revision"));
 
@@ -125,7 +125,7 @@ public class VersionInfoPListManagerTest
     transitivDepCoord.setVersion("transitiveDepVersion");
 
     SCM transitivDepScm = new SCM();
-    transitivDepScm.setConnection("scm:perforce:TRANS_DEP_PERFORCE_PORT://TRANS_DEP_DEPOT_PATH/");
+    transitivDepScm.setConnection("scm:perforce:TRANS_DEP_PERFORCEHOST:PORT://TRANS_DEP_DEPOT_PATH/");
     transitivDepScm.setRevision("transitiveDepRevision");
 
     transitivDep.setCoordinates(transitivDepCoord);
@@ -144,7 +144,7 @@ public class VersionInfoPListManagerTest
     Assert.assertEquals("transitiveDepVersion",
           plistAccessor.printValue("dependencies:0:dependencies:0:coordinates:version"));
 
-    Assert.assertEquals("scm:perforce:TRANS_DEP_PERFORCE_PORT://TRANS_DEP_DEPOT_PATH/",
+    Assert.assertEquals("PORT",
           plistAccessor.printValue("dependencies:0:dependencies:0:scm:connection"));
     Assert
       .assertEquals("transitiveDepRevision", plistAccessor.printValue("dependencies:0:dependencies:0:scm:revision"));

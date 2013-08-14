@@ -107,7 +107,17 @@ public class VersionInfoPListManager
             + ":coordinates");
 
       plistAccessor.addDictToArray("scm", _path);
-      plistAccessor.addStringValueToDict("connection", dep.getScm().getConnection(), _path + ":scm");
+      String[] parts = dep.getScm().getConnection().split(":");
+      String port;
+      if(parts.length == 1) 
+      {
+        port = parts[0];
+      }
+      else
+      {
+        port = parts[3]; //scm:perforce:PERFORCE_HOST:PORT:PATH
+      }
+      plistAccessor.addStringValueToDict("connection", port, _path + ":scm");
       plistAccessor.addStringValueToDict("revision", dep.getScm().getRevision(), _path + ":scm");
       addDependencyToPlist(dep.getDependencies(), plistAccessor, _path + ":dependencies:");
 
