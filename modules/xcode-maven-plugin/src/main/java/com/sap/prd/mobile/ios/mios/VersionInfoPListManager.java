@@ -58,10 +58,16 @@ public class VersionInfoPListManager
   {
     try {
 
-      final String connectionString = "scm:perforce:"
-            + versionInfo.getProperty("port")
-            + ":"
-            + getDepotPath(versionInfo.getProperty("depotpath"));
+      final String port = versionInfo.getProperty("port");
+      
+      final int colonIndex = port.indexOf(":");
+      
+      if (colonIndex == -1)
+      {
+        throw new MojoExecutionException("No colon found in perforce port : '" + port + "'.");
+      }
+      
+      final String connectionString = port.substring( colonIndex +  ":".length());
 
       PListAccessor plistAccessor = new PListAccessor(file);
       plistAccessor.createPlist();

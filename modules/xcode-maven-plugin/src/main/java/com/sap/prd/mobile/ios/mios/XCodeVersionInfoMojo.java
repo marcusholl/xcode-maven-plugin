@@ -19,18 +19,16 @@
  */
 package com.sap.prd.mobile.ios.mios;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Source;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -233,10 +231,12 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
           final ExecResult originalSecurityCMSMessageInfo = CodeSignManager.getSecurityCMSInformation(appFolder);
 
           try {
-          transformVersionsXml(versionsXmlInBuild, versionsXmlInApp);
+            transformVersionsXml(versionsXmlInBuild, versionsXmlInApp);
           } catch(Exception e) {
-            e.printStackTrace();
+            // TODO improve
+            throw new MojoExecutionException("Could not transform versions.xml", e);
           }
+
           getLog().info("Versions.xml file copied from: '" + versionsXmlInBuild + " ' to ' " + versionsXmlInApp);
           FileUtils.copyFile(versionsPListInBuild, versionsPListInApp);
           getLog().info("Versions.plist file copied from: '" + versionsPListInBuild + " ' to ' " + versionsPListInApp);
@@ -256,48 +256,12 @@ public class XCodeVersionInfoMojo extends BuildContextAwareMojo
 
   private void transformVersionsXml(File versionsXmlInBuild, File versionsXmlInApp) throws ParserConfigurationException, SAXException, IOException, TransformerFactoryConfigurationError, TransformerException
   {
-    String transformerRules = "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">" +
-          "<xsl:template match=\"@*|node()\">" +
-                                  "<xsl:copy>" +
-                                    "<xsl:choose>" +
-                                      "<xsl:when test=\"name()='connection'\">" +
-                                      "<xsl:call-template name=\"tokenize\">" +
-                                        "<xsl:with-param name=\"text\" select=\"substring-after(., ':')\"/>" +
-                                      "</xsl:call-template>" +
-                                      "</xsl:when>" +
-                                      "<xsl:otherwise>" +
-                                        "<xsl:apply-templates select=\"@*|node()\"/>" +
-                                      "</xsl:otherwise>" +
-                                    "</xsl:choose>" + 
-                                  "</xsl:copy>" +
-                                "</xsl:template>" + 
-                                  "<xsl:template name=\"tokenize\">" +
-                                  "<xsl:param name=\"text\" select=\".\"/>" +
-                                  "<xsl:param name=\"separator\" select=\"':'\"/>" +
-                                    "<xsl:choose>" +
-                                      "<xsl:when test=\"not(contains($text, $separator))\">" +
-                                        "<item>" +
-                                            "<xsl:value-of select=\"normalize-space($text)\"/>" +
-                                        "</item>" +
-                                    "</xsl:when>" +
-                                    "<xsl:otherwise>" +
-                                        "<item>" +
-                                            "<xsl:value-of select=\"normalize-space(substring-before($text, $separator))\"/>" +
-                                        "</item>" +
-                                         "<xsl:call-template name=\"tokenize\">" + 
-                                            "<xsl:with-param name=\"text\" select=\"substring-after($text, $separator)\"/>" +
-                                        "</xsl:call-template>" +
-                                    "</xsl:otherwise>" +
-                                "</xsl:choose>" +
 
-                                  "</xsl:template>" +
-                              "</xsl:stylesheet>";
-    
-    InputStream transformation = new ByteArrayInputStream(transformerRules.getBytes());
-    Source _tranformation = new StreamSource(transformation);
-    Transformer transformer = TransformerFactory.newInstance().newTransformer(_tranformation);
-    transformer.transform(new StreamSource(versionsXmlInBuild), new StreamResult(versionsXmlInApp));
-    transformer.transform(new StreamSource(versionsXmlInBuild), new StreamResult(new File("/Users/d025390/versions.xml")));
+      Transformer transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(getClass().getClassLoader().getResourceAsStream("transformation.xml")));
+      transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+      transformer.transform(new StreamSource(versionsXmlInBuild), new StreamResult(versionsXmlInApp));
   }
   
   private void sign(File rootDir, String configuration, String sdk) throws IOException, XCodeException
