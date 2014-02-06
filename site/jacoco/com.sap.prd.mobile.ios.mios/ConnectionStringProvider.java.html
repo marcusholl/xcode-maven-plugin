@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../resources/report.css" type="text/css"/><link rel="shortcut icon" href="../resources/report.gif" type="image/gif"/><title>ConnectionStringProvider.java</title><link rel="stylesheet" href="../resources/prettify.css" type="text/css"/><script type="text/javascript" src="../resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="right"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Xcode Maven Plugin</a> &gt; <a href="index.html" class="el_package">com.sap.prd.mobile.ios.mios</a> &gt; <span class="el_source">ConnectionStringProvider.java</span></div><h1>ConnectionStringProvider.java</h1><pre class="source lang-java linenums">/*
+ * #%L
+ * xcode-maven-plugin
+ * %%
+ * Copyright (C) 2012 SAP AG
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+package com.sap.prd.mobile.ios.mios;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
+
+<span class="nc" id="L29">public class ConnectionStringProvider {</span>
+
+  private static final String THREEDOTS = &quot;...&quot;;
+  private static final String PROTOCOL_PREFIX_PERFORCE = &quot;scm:perforce:&quot;;
+  private static final String PROTOCOL_PREFIX_GIT = &quot;scm:git:&quot;;
+  private static final int GIT_DEFAULT_SSH_PORT= 29418;
+  private static final int PERFORCE_DEFAULT_PORT = 1666;
+
+  public static String getConnectionString(final Properties versionInfo, final boolean hideConfidentialInformation) throws IOException {
+<span class="fc" id="L38">    final String type = versionInfo.getProperty(&quot;type&quot;);</span>
+
+<span class="fc" id="L40">    final StringBuilder connectionString = new StringBuilder(128);</span>
+
+<span class="fc" id="L42">    final String port = versionInfo.getProperty(&quot;port&quot;);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    if(StringUtils.isBlank(port))</span>
+<span class="fc" id="L44">      throw new IllegalStateException(&quot;No SCM port provided.&quot;);</span>
+
+<span class="pc bpc" id="L46" title="1 of 4 branches missed.">    if (type != null &amp;&amp; type.equals(&quot;git&quot;)) {</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">      if(hideConfidentialInformation) {</span>
+        try {
+<span class="fc" id="L49">          URI gitUri = new URI(port);</span>
+<span class="fc" id="L50">          int _port = gitUri.getPort();</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">          if(_port == -1)</span>
+<span class="fc" id="L52">            _port = GIT_DEFAULT_SSH_PORT;</span>
+<span class="fc" id="L53">          connectionString.append(_port);</span>
+<span class="fc" id="L54">          connectionString.append(gitUri.getPath());</span>
+        }
+<span class="nc" id="L56">        catch (URISyntaxException e) {</span>
+<span class="nc" id="L57">          throw new IllegalStateException(String.format(&quot;Invalid port: %s&quot;, port));</span>
+<span class="fc" id="L58">        }</span>
+      } else {
+<span class="fc" id="L60">        connectionString.append(PROTOCOL_PREFIX_GIT).append(versionInfo.getProperty(&quot;port&quot;));</span>
+      }
+
+    } else {
+
+<span class="fc" id="L65">      final String depotPath = versionInfo.getProperty(&quot;depotpath&quot;);</span>
+
+<span class="fc bfc" id="L67" title="All 2 branches covered.">      if(hideConfidentialInformation) {</span>
+        try {
+<span class="fc" id="L69">          URI perforceUri = new URI(&quot;perforce://&quot; + port);</span>
+          
+<span class="fc" id="L71">          int _port = perforceUri.getPort();</span>
+<span class="pc bpc" id="L72" title="1 of 2 branches missed.">          if(_port == -1) {</span>
+<span class="nc" id="L73">            _port = PERFORCE_DEFAULT_PORT;</span>
+          }
+<span class="fc" id="L75">          connectionString.append(_port);</span>
+<span class="fc" id="L76">          connectionString.append(depotPath);</span>
+        }
+<span class="nc" id="L78">        catch (URISyntaxException e) {</span>
+<span class="nc" id="L79">          throw new IllegalStateException(String.format(&quot;Invalid port: %s&quot;, port));</span>
+<span class="fc" id="L80">        }</span>
+      } else {
+
+<span class="fc bfc" id="L83" title="All 2 branches covered.">        if(StringUtils.isBlank(depotPath))</span>
+<span class="fc" id="L84">          throw new IllegalStateException(&quot;No depot path provided.&quot;);</span>
+
+<span class="fc" id="L86">        connectionString.append(PROTOCOL_PREFIX_PERFORCE)</span>
+        .append(port).append(&quot;:&quot;)
+        .append(getDepotPath(depotPath));
+      } 
+    }
+
+<span class="fc" id="L92">    return connectionString.toString();</span>
+  }
+
+  private static String getDepotPath(String fullDepotPath)
+  {
+<span class="fc bfc" id="L97" title="All 2 branches covered.">    if (fullDepotPath.endsWith(THREEDOTS)) {</span>
+<span class="fc" id="L98">      fullDepotPath = fullDepotPath.substring(0, fullDepotPath.length() - THREEDOTS.length());</span>
+    }
+<span class="fc" id="L100">    return fullDepotPath;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.6.3.201306030806</span></div></body></html>
