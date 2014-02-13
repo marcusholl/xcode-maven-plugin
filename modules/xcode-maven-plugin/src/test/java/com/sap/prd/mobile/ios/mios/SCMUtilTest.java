@@ -19,7 +19,6 @@
  */
 package com.sap.prd.mobile.ios.mios;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.Assert;
@@ -49,7 +48,7 @@ public class SCMUtilTest
     
     String connectionString = SCMUtil.getConnectionString(versionInfo, true);
     
-    Assert.assertEquals("1234//root/TEST_Project/dev/", connectionString);
+    Assert.assertEquals("1234/TEST_Project", connectionString);
   }
 
   @Test

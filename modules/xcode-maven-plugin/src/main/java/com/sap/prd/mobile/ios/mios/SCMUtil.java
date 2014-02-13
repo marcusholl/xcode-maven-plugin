@@ -98,7 +98,13 @@ public class SCMUtil {
             
       final String depotPath = versionInfo.getProperty("depotpath");
 
+      if(StringUtils.isBlank(depotPath))
+        throw new IllegalStateException("No depot path provided.");
+
+      final String[] parts = depotPath.split("/");
+      
       if(hideConfidentialInformation) {
+
         try {
           URI perforceUri = new URI("perforce://" + port);
           
@@ -107,15 +113,17 @@ public class SCMUtil {
             _port = PERFORCE_DEFAULT_PORT;
           }
           connectionString.append(_port);
-          connectionString.append(depotPath);
+          
+          if(parts.length >= 2) {
+            connectionString.append("/");
+            connectionString.append(parts[parts.length - 2]);
+          }
         }
         catch (URISyntaxException e) {
           throw new IllegalStateException(String.format("Invalid port: %s", port));
         }
       } else {
 
-        if(StringUtils.isBlank(depotPath))
-          throw new IllegalStateException("No depot path provided.");
 
         connectionString.append(PROTOCOL_PREFIX_PERFORCE)
         .append(port).append(":")

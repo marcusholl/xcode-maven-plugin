@@ -72,7 +72,7 @@ public class VersionInfoPListManagerTest
     Assert.assertEquals(ARTIFACT_ID, plistAccessorPerforce.printValue("coordinates:artifactId"));
     Assert.assertEquals("1.0.0", plistAccessorPerforce.printValue("coordinates:version"));
 
-    Assert.assertEquals("9876//MY_DEPOT_PATH/...", plistAccessorPerforce.printValue("scm:connection"));
+    Assert.assertEquals("9876/MY_DEPOT_PATH", plistAccessorPerforce.printValue("scm:connection"));
     Assert.assertEquals("1234", plistAccessorPerforce.printValue("scm:revision"));
   }
 
